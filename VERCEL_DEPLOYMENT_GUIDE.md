@@ -56,9 +56,9 @@ Go to **Settings** → **Environment Variables**
 
 | Name | Value | Environment |
 |------|-------|-------------|
-| `VITE_API_URL` | `https://your-backend.railway.app` | Production |
-| `VITE_API_URL` | `http://localhost:3000` | Development |
-| `VITE_API_URL` | `https://preview-backend.railway.app` | Preview (optional) |
+| `VITE_API_URL` | `https://your-backend.onrender.com/api` | Production |
+| `VITE_API_URL` | `http://localhost:3000/api` | Development |
+| `VITE_API_URL` | `https://preview-backend.onrender.com/api` | Preview (optional) |
 
 **Important:**
 - ✅ Use `/api` at the end: `https://your-backend.railway.app/api`
@@ -87,7 +87,7 @@ Click **"Deploy"** button.
 
 **Important!** Update backend to allow Vercel domain:
 
-**In `backend/.env` (or Railway environment variables):**
+**In Render Dashboard → Environment Variables:**
 
 ```env
 FRONTEND_URL=https://todo-app-xyz.vercel.app
@@ -95,7 +95,7 @@ FRONTEND_URL=https://todo-app-xyz.vercel.app
 
 **Without trailing slash!**
 
-**Then redeploy backend** (push to GitHub or manual deploy).
+**Then redeploy backend** (Render → Manual Deploy or push to GitHub).
 
 ---
 
@@ -146,7 +146,7 @@ Node Version: 18.x
 
 ### **Environment Variables:**
 ```
-VITE_API_URL=https://your-backend.railway.app/api
+VITE_API_URL=https://your-backend.onrender.com/api
 ```
 
 **Note:** Vite requires `VITE_` prefix for environment variables!
@@ -289,7 +289,7 @@ Preview (PR): https://todo-app-git-feature-xyz.vercel.app
 ```
 
 **Use production URL in:**
-- Backend CORS (`FRONTEND_URL`)
+- Render environment variables (`FRONTEND_URL`)
 - Share with users
 - Add to GitHub README
 
@@ -325,9 +325,9 @@ Update Backend:
 
 ### **Your URLs:**
 ```
-Backend API: https://your-backend.railway.app/api
+Backend API: https://your-backend.onrender.com/api
 Frontend: https://your-frontend.vercel.app
-Swagger: https://your-backend.railway.app/api-docs
+Swagger: https://your-backend.onrender.com/api-docs
 ```
 
 ### **GitHub Actions:**

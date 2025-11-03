@@ -14,8 +14,8 @@
 │  🎨 Frontend (Vercel)                       │
 │  https://todo-app.vercel.app                │
 │            ↓ API calls                      │
-│  🚂 Backend (Railway)                       │
-│  https://todo-app.railway.app/api           │
+│  🌐 Backend (Render)                        │
+│  https://todo-app.onrender.com/api          │
 │            ↓ DB queries                     │
 │  🐘 Database (Neon PostgreSQL)              │
 │  Neon serverless PostgreSQL                 │
@@ -47,11 +47,11 @@
 - [x] Migrations applied locally
 
 ### **Phase 2: Backend Deployment** 📝 NEXT
-- [ ] Create Railway account
-- [ ] Create Railway project
+- [ ] Create Render account
+- [ ] Create Render web service
 - [ ] Configure backend service
 - [ ] Add environment variables
-- [ ] Get Railway token
+- [ ] Get Render deploy hook
 - [ ] Add to GitHub secrets
 - [ ] Deploy backend
 
@@ -77,8 +77,8 @@
 
 ### **TODAY (15-20 minutes):**
 
-**1. Setup Railway Backend (5 min)**
-   - Follow: [`RAILWAY_DEPLOYMENT_GUIDE.md`](RAILWAY_DEPLOYMENT_GUIDE.md)
+**1. Setup Render Backend (10 min)**
+   - Follow: [`RENDER_DEPLOYMENT_GUIDE.md`](RENDER_DEPLOYMENT_GUIDE.md)
    - Deploy backend
    - Get public URL
 
@@ -103,12 +103,13 @@
 
 ```
 Deployment Guides:
-├── DEPLOYMENT_MASTER_GUIDE.md    ← This file (overview)
-├── RAILWAY_DEPLOYMENT_GUIDE.md   ← Backend deployment
-├── VERCEL_DEPLOYMENT_GUIDE.md    ← Frontend deployment
-├── GITHUB_ACTIONS_SETUP.md       ← CI/CD setup
-├── NEON_POSTGRESQL_SETUP.md      ← Database setup (✅ DONE)
-└── backend/POSTGRESQL_MIGRATION_GUIDE.md  ← Migration info
+├── DEPLOYMENT_MASTER_GUIDE.md           ← This file (overview)
+├── RENDER_DEPLOYMENT_GUIDE.md           ← Backend deployment
+├── RENDER_GITHUB_ACTIONS_SETUP.md       ← Render CI/CD setup
+├── VERCEL_DEPLOYMENT_GUIDE.md           ← Frontend deployment
+├── GITHUB_ACTIONS_SETUP.md              ← General CI/CD info
+├── NEON_POSTGRESQL_SETUP.md             ← Database setup (✅ DONE)
+└── backend/POSTGRESQL_MIGRATION_GUIDE.md ← Migration info
 ```
 
 ---
@@ -121,8 +122,8 @@ Deployment Guides:
 | `TEST_DATABASE_URL` | Neon → Create test branch | Test database |
 | `JWT_SECRET` | Generate random (32+ chars) | JWT signing |
 | `JWT_REFRESH_SECRET` | Generate random (32+ chars) | Refresh tokens |
-| `RAILWAY_TOKEN` | Railway → Account Settings | Backend deploy |
-| `BACKEND_URL` | After Railway deploy | Backend API URL |
+| `RENDER_DEPLOY_HOOK` | Render → Settings → Deploy Hook | Backend deploy trigger |
+| `BACKEND_URL` | After Render deploy | Backend API URL |
 | `VERCEL_TOKEN` | Vercel → Account Settings | Frontend deploy |
 | `VERCEL_ORG_ID` | Vercel → Project Settings | Vercel team |
 | `VERCEL_PROJECT_ID` | Vercel → Project Settings | Vercel project |
