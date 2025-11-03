@@ -25,7 +25,7 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           cd backend
-          npm ci
+          npm install
 
       - name: 🗄️ Setup test database
         env:
@@ -60,7 +60,7 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           cd frontend
-          npm ci
+          npm install
 
       - name: 🧪 Run frontend tests
         run: |
@@ -83,9 +83,9 @@ jobs:
 
       - name: 📦 Install all dependencies
         run: |
-          cd backend && npm ci
-          cd ../frontend && npm ci
-          cd ../test && npm ci
+          cd backend && npm install
+          cd ../frontend && npm install
+          cd ../test && npm install
 
       - name: 🎭 Install Playwright browsers
         run: |
