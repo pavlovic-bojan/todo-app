@@ -12,8 +12,9 @@ describe('Security Configuration', () => {
       expect(typeof helmetConfig).toBe('function')
     })
 
-    it('should have name "helmet"', () => {
-      expect(helmetConfig.name).toBe('helmet')
+    it('should have valid function name', () => {
+      // Helmet can return 'helmet' or 'helmetMiddleware' depending on version
+      expect(helmetConfig.name).toMatch(/helmet/i)
     })
   })
 

@@ -21,8 +21,11 @@ function validateUsername(username) {
 
 // Validate age
 function validateAge(age) {
-    if (age && (typeof age !== 'number' || age < 1 || age > 120)) {
-        throw new Error('Age must be a valid number between 1 and 120')
+    // Check if age is provided (not null/undefined)
+    if (age !== null && age !== undefined) {
+        if (typeof age !== 'number' || age < 1 || age > 120) {
+            throw new Error('Age must be a valid number between 1 and 120')
+        }
     }
 }
 
