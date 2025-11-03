@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    Int       @id @default(autoincrement())
+  username              String    @unique @db.VarChar(50)
+  email                 String    @unique @db.VarChar(255)
+  hashedPassword        String    @db.VarChar(255)
+  role                  String    @default("client") @db.VarChar(20) // client or admin
+  age                   Int?
+  hashedResetToken      String?   @db.VarChar(64) // Hashed reset token for security (SHA256 = 64 chars)
+  resetTokenExpiry      DateTime?
+  refreshToken          String?   @db.VarChar(500) // For refresh token mechanism
+  refreshTokenExpiry    DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  todos                 Todo[]
+
+  @@index([email])
+  @@index([username])
+  @@map("users")
+}
+
+model Todo {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  description String?  @db.VarChar(1000)
+  completed   Boolean  @default(false)
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([completed])
+  @@index([userId, completed])
+  @@map("todos")
+}
+

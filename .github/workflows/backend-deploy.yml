@@ -1,0 +1,76 @@
+name: 🚀 Backend Deploy to Railway
+
+# Trigger on push to main branch (backend changes only)
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-deploy.yml'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  deploy:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Checkout code
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      # 3. Install dependencies
+      - name: 📦 Install dependencies
+        run: |
+          cd backend
+          npm ci
+
+      # 4. Run tests before deploy
+      - name: 🧪 Run backend tests
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+        run: |
+          cd backend
+          npm run prisma:generate
+          npm test
+
+      # 5. Run Prisma migrations
+      - name: 🔄 Run database migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          cd backend
+          npx prisma migrate deploy
+
+      # 6. Deploy to Railway (or your chosen platform)
+      - name: 🚀 Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          npm install -g @railway/cli
+          cd backend
+          railway up --service backend
+
+      # 7. Health check after deployment
+      - name: 🏥 Health check
+        run: |
+          sleep 10
+          curl -f ${{ secrets.BACKEND_URL }}/api/health || exit 1
+
+      # 8. Notify on success
+      - name: ✅ Deployment successful
+        if: success()
+        run: |
+          echo "✅ Backend deployed successfully!"
+          echo "🔗 URL: ${{ secrets.BACKEND_URL }}"
+
