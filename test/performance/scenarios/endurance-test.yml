@@ -6,9 +6,6 @@ config:
       arrivalRate: 20
       name: "Endurance - 1 hour sustained load"
   
-  plugins:
-    metrics-by-endpoint: {}
-  
   processor: "../processors/auth-processor.js"
 
 scenarios:

@@ -26,9 +26,6 @@ config:
       rampTo: 10
       name: "Recovery"
   
-  plugins:
-    metrics-by-endpoint: {}
-  
   processor: "../processors/auth-processor.js"
 
 scenarios:

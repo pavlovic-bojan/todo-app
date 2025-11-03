@@ -1,16 +1,13 @@
 /**
  * Database Helper
- * Direct SQLite database access for testing
+ * Direct PostgreSQL database access for testing via Prisma
  */
-const Database = require('better-sqlite3')
-const path = require('path')
+const { PrismaClient } = require('@prisma/client')
 const { allure } = require('allure-playwright')
 
 class DBHelper {
   constructor() {
-    const dbPath = path.join(__dirname, '../../backend/dev.db')
-    this.db = null
-    this.dbPath = dbPath
+    this.prisma = null
   }
 
   /**
@@ -18,16 +15,17 @@ class DBHelper {
    */
   connect() {
     try {
-      if (!this.db) {
-        const fs = require('fs')
-        if (!fs.existsSync(this.dbPath)) {
-          throw new Error(`Database file not found: ${this.dbPath}`)
-        }
-        
-        this.db = new Database(this.dbPath, { readonly: false })
-        this.db.pragma('journal_mode = WAL')
+      if (!this.prisma) {
+        // Use DATABASE_URL from environment or fallback to backend
+        this.prisma = new PrismaClient({
+          datasources: {
+            db: {
+              url: process.env.DATABASE_URL || process.env.TEST_DATABASE_URL
+            }
+          }
+        })
       }
-      return this.db
+      return this.prisma
     } catch (error) {
       console.error('Database connection error:', error.message)
       throw error
@@ -37,21 +35,21 @@ class DBHelper {
   /**
    * Close database connection
    */
-  close() {
-    if (this.db) {
-      this.db.close()
-      this.db = null
+  async close() {
+    if (this.prisma) {
+      await this.prisma.$disconnect()
+      this.prisma = null
     }
   }
 
   /**
    * Execute raw SQL query
    */
-  query(sql, params = []) {
+  async query(sql, params = []) {
     try {
       this.connect()
-      const stmt = this.db.prepare(sql)
-      return params.length > 0 ? stmt.all(...params) : stmt.all()
+      const result = await this.prisma.$queryRawUnsafe(sql, ...params)
+      return result
     } catch (error) {
       console.error('Database query error:', error.message)
       console.error('SQL:', sql)
@@ -62,11 +60,11 @@ class DBHelper {
   /**
    * Execute raw SQL command (INSERT, UPDATE, DELETE)
    */
-  exec(sql, params = []) {
+  async exec(sql, params = []) {
     try {
       this.connect()
-      const stmt = this.db.prepare(sql)
-      return params.length > 0 ? stmt.run(...params) : stmt.run()
+      const result = await this.prisma.$executeRawUnsafe(sql, ...params)
+      return result
     } catch (error) {
       console.error('Database exec error:', error.message)
       console.error('SQL:', sql)
@@ -77,94 +75,106 @@ class DBHelper {
   /**
    * Get user by username
    */
-  getUserByUsername(username) {
-    const sql = 'SELECT * FROM users WHERE username = ?'
-    const users = this.query(sql, [username])
-    return users[0] || null
+  async getUserByUsername(username) {
+    this.connect()
+    return await this.prisma.user.findUnique({
+      where: { username }
+    })
   }
 
   /**
    * Get user by email
    */
-  getUserByEmail(email) {
-    const sql = 'SELECT * FROM users WHERE email = ?'
-    const users = this.query(sql, [email])
-    return users[0] || null
+  async getUserByEmail(email) {
+    this.connect()
+    return await this.prisma.user.findUnique({
+      where: { email }
+    })
   }
 
   /**
    * Get user by ID
    */
-  getUserById(id) {
-    const sql = 'SELECT * FROM users WHERE id = ?'
-    const users = this.query(sql, [id])
-    return users[0] || null
+  async getUserById(id) {
+    this.connect()
+    return await this.prisma.user.findUnique({
+      where: { id }
+    })
   }
 
   /**
    * Get all todos for user
    */
-  getTodosByUserId(userId) {
-    const sql = 'SELECT * FROM todos WHERE userId = ?'
-    return this.query(sql, [userId])
+  async getTodosByUserId(userId) {
+    this.connect()
+    return await this.prisma.todo.findMany({
+      where: { userId }
+    })
   }
 
   /**
    * Get todo by ID
    */
-  getTodoById(id) {
-    const sql = 'SELECT * FROM todos WHERE id = ?'
-    const todos = this.query(sql, [id])
-    return todos[0] || null
+  async getTodoById(id) {
+    this.connect()
+    return await this.prisma.todo.findUnique({
+      where: { id }
+    })
   }
 
   /**
    * Count users
    */
-  countUsers() {
-    const sql = 'SELECT COUNT(*) as count FROM users'
-    const result = this.query(sql)
-    return result[0].count
+  async countUsers() {
+    this.connect()
+    return await this.prisma.user.count()
   }
 
   /**
    * Count todos
    */
-  countTodos() {
-    const sql = 'SELECT COUNT(*) as count FROM todos'
-    const result = this.query(sql)
-    return result[0].count
+  async countTodos() {
+    this.connect()
+    return await this.prisma.todo.count()
   }
 
   /**
    * Delete user by username
    */
-  deleteUserByUsername(username) {
-    const sql = 'DELETE FROM users WHERE username = ?'
-    return this.exec(sql, [username])
+  async deleteUserByUsername(username) {
+    this.connect()
+    return await this.prisma.user.delete({
+      where: { username }
+    })
   }
 
   /**
    * Delete all test users (username starts with testuser_)
    */
-  deleteTestUsers() {
-    const sql = "DELETE FROM users WHERE username LIKE 'testuser_%'"
-    return this.exec(sql)
+  async deleteTestUsers() {
+    this.connect()
+    return await this.prisma.user.deleteMany({
+      where: {
+        username: {
+          startsWith: 'testuser_'
+        }
+      }
+    })
   }
 
   /**
    * Delete all todos
    */
-  deleteAllTodos() {
-    const sql = 'DELETE FROM todos'
-    return this.exec(sql)
+  async deleteAllTodos() {
+    this.connect()
+    return await this.prisma.todo.deleteMany()
   }
 
   /**
    * Verify user exists
    */
   async verifyUserExists(username) {
-    const user = this.getUserByUsername(username)
+    const user = await this.getUserByUsername(username)
     
     if (user) {
       await allure.attachment('User Found in DB', JSON.stringify(user, null, 2), 'application/json')
@@ -179,14 +189,19 @@ class DBHelper {
    * Verify todo exists
    */
   async verifyTodoExists(title, userId) {
-    const sql = 'SELECT * FROM todos WHERE title = ? AND userId = ?'
-    const todos = this.query(sql, [title, userId])
+    this.connect()
+    const todo = await this.prisma.todo.findFirst({
+      where: {
+        title,
+        userId
+      }
+    })
     
-    if (todos.length > 0) {
-      await allure.attachment('Todo Found in DB', JSON.stringify(todos[0], null, 2), 'application/json')
+    if (todo) {
+      await allure.attachment('Todo Found in DB', JSON.stringify(todo, null, 2), 'application/json')
     }
     
-    return todos.length > 0
+    return !!todo
   }
 
   /**
@@ -194,8 +209,8 @@ class DBHelper {
    */
   async getDBStats() {
     const stats = {
-      totalUsers: this.countUsers(),
-      totalTodos: this.countTodos()
+      totalUsers: await this.countUsers(),
+      totalTodos: await this.countTodos()
     }
     
     await allure.attachment('Database Stats', JSON.stringify(stats, null, 2), 'application/json')
@@ -204,4 +219,3 @@ class DBHelper {
 }
 
 module.exports = new DBHelper()
-

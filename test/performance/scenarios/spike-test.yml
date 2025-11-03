@@ -22,9 +22,6 @@ config:
       arrivalRate: 10
       name: "Recovery period"
   
-  plugins:
-    metrics-by-endpoint: {}
-  
   processor: "../processors/auth-processor.js"
 
 scenarios:

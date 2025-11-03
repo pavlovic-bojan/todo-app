@@ -20,9 +20,6 @@ config:
       rampTo: 5
       name: "Ramp down"
   
-  plugins:
-    metrics-by-endpoint: {}
-  
   processor: "../processors/auth-processor.js"
   
   variables:
