@@ -40,7 +40,7 @@ jobs:
       # 5. Build production bundle
       - name: 🏗️ Build for production
         env:
-          VITE_API_URL: ${{ secrets.BACKEND_URL }}
+          VITE_API_URL: ${{ secrets.BACKEND_URL }}/api
         run: |
           cd frontend
           npm run build
