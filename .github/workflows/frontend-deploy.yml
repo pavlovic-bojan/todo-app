@@ -23,7 +23,7 @@ jobs:
       - name: 🔧 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       # 3. Install dependencies
       - name: 📦 Install dependencies
@@ -52,8 +52,7 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          cd frontend
-          npx vercel deploy --prod --token $VERCEL_TOKEN --yes
+          npx vercel deploy ./frontend --prod --token $VERCEL_TOKEN --yes
 
       # 7. Notify on success
       - name: ✅ Deployment successful
