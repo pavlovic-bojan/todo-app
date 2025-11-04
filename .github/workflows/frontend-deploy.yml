@@ -47,12 +47,17 @@ jobs:
 
       # 6. Deploy to Vercel
       - name: 🚀 Deploy to Vercel
+        working-directory: ./frontend
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          npx vercel deploy ./frontend --prod --token $VERCEL_TOKEN --yes
+          # Create .vercel folder with project config to override Vercel settings
+          mkdir -p .vercel
+          echo '{"orgId":"'$VERCEL_ORG_ID'","projectId":"'$VERCEL_PROJECT_ID'"}' > .vercel/project.json
+          # Deploy from current directory (frontend/) - Vercel will use current dir as root
+          npx vercel deploy --prod --token $VERCEL_TOKEN --yes
 
       # 7. Notify on success
       - name: ✅ Deployment successful
