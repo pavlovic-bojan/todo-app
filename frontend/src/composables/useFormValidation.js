@@ -3,7 +3,9 @@ import { ref, computed } from 'vue'
 export function useFormValidation() {
   const errors = ref({})
 
-  const hasErrors = computed(() => Object.keys(errors.value).length > 0)
+  const hasErrors = computed(() => {
+    return Object.values(errors.value).some(error => error !== null && error !== undefined)
+  })
 
   const validators = {
     required: (value, fieldName = 'This field') => {

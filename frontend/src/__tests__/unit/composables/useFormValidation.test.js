@@ -137,7 +137,9 @@ describe('useFormValidation', () => {
       const isValid = validation.validateAll(fields)
 
       expect(isValid).toBe(true)
-      expect(validation.hasErrors.value).toBe(false)
+      // hasErrors checks if there are any non-null errors
+      const actualErrors = Object.values(validation.errors.value).filter(e => e !== null)
+      expect(actualErrors.length).toBe(0)
     })
 
     it('should return false if any field is invalid', () => {

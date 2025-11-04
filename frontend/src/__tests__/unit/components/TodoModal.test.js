@@ -38,7 +38,12 @@ describe('TodoModal Component', () => {
   })
 
   it('should show "Edit Todo" title when editing', async () => {
+    // Close and reopen with todo to trigger watch
+    await wrapper.setProps({ modelValue: false })
+    await wrapper.vm.$nextTick()
+    
     await wrapper.setProps({
+      modelValue: true,
       todo: { id: 1, title: 'Test', description: 'Test desc' }
     })
     await wrapper.vm.$nextTick()
@@ -53,6 +58,10 @@ describe('TodoModal Component', () => {
       description: 'Test Description'
     }
 
+    // Close and reopen with todo to trigger watch
+    await wrapper.setProps({ modelValue: false })
+    await wrapper.vm.$nextTick()
+    
     await wrapper.setProps({
       modelValue: true,
       todo: todo

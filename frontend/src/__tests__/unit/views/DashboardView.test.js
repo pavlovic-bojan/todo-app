@@ -69,8 +69,9 @@ describe('DashboardView', () => {
     const wrapper = mount(DashboardView)
     await flushPromises()
 
-    const newButton = wrapper.find('button:contains("New Todo")')
-    expect(newButton.exists()).toBe(true)
+    const buttons = wrapper.findAll('button')
+    const hasNewButton = buttons.some(btn => btn.text().includes('New Todo'))
+    expect(hasNewButton).toBe(true)
   })
 
   it('should have filter buttons', async () => {
