@@ -49,9 +49,14 @@ describe('ErrorBoundary Component', () => {
 
     expect(wrapper.find('.alert-light').exists()).toBe(false)
 
-    // Click show details
-    await wrapper.find('button:contains("Show Details")').trigger('click')
-    await wrapper.vm.$nextTick()
+    // Find button by text content
+    const buttons = wrapper.findAll('button')
+    const showDetailsButton = buttons.find(btn => btn.text().includes('Show Details'))
+    
+    if (showDetailsButton) {
+      await showDetailsButton.trigger('click')
+      await wrapper.vm.$nextTick()
+    }
 
     expect(wrapper.vm.showDetails).toBe(true)
   })
@@ -62,8 +67,9 @@ describe('ErrorBoundary Component', () => {
 
     await wrapper.vm.$nextTick()
 
-    const reloadButton = wrapper.find('button:contains("Reload")')
-    expect(reloadButton.exists()).toBe(true)
+    const buttons = wrapper.findAll('button')
+    const hasReloadButton = buttons.some(btn => btn.text().includes('Reload'))
+    expect(hasReloadButton).toBe(true)
   })
 
   it('should have go home button', async () => {
@@ -72,8 +78,9 @@ describe('ErrorBoundary Component', () => {
 
     await wrapper.vm.$nextTick()
 
-    const homeButton = wrapper.find('button:contains("Go Home")')
-    expect(homeButton.exists()).toBe(true)
+    const buttons = wrapper.findAll('button')
+    const hasHomeButton = buttons.some(btn => btn.text().includes('Go Home'))
+    expect(hasHomeButton).toBe(true)
   })
 
   it('should reset error state', () => {
