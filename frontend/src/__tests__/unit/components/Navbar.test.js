@@ -78,8 +78,11 @@ describe('Navbar Component', () => {
 
     await router.isReady()
 
-    const logoutButton = wrapper.find('button:contains("Logout")')
-    if (logoutButton.exists()) {
+    // Find logout button by text content
+    const buttons = wrapper.findAll('button')
+    const logoutButton = buttons.find(btn => btn.text().includes('Logout'))
+    
+    if (logoutButton) {
       await logoutButton.trigger('click')
       expect(authStore.logout).toHaveBeenCalled()
     }

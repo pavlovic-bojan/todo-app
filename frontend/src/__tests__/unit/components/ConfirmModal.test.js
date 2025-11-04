@@ -10,14 +10,21 @@ describe('ConfirmModal Component', () => {
         title: 'Test Title',
         message: 'Test message'
       },
+      global: {
+        stubs: {
+          Teleport: false
+        }
+      },
       attachTo: document.body
     })
 
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.find('.modal').exists()).toBe(true)
-    expect(wrapper.text()).toContain('Test Title')
-    expect(wrapper.text()).toContain('Test message')
+    // Modal is teleported to body, check document.body
+    const modal = document.body.querySelector('.modal')
+    expect(modal).toBeTruthy()
+    expect(document.body.textContent).toContain('Test Title')
+    expect(document.body.textContent).toContain('Test message')
     
     wrapper.unmount()
   })
@@ -39,16 +46,25 @@ describe('ConfirmModal Component', () => {
         title: 'Confirm',
         message: 'Are you sure?'
       },
+      global: {
+        stubs: {
+          Teleport: false
+        }
+      },
       attachTo: document.body
     })
 
     await wrapper.vm.$nextTick()
 
-    const buttons = wrapper.findAll('button')
-    const confirmButton = buttons.find(btn => btn.classes().includes('btn-primary') || btn.classes().includes('btn-danger'))
+    // Find buttons in document.body since modal is teleported
+    const buttons = document.body.querySelectorAll('button')
+    const confirmButton = Array.from(buttons).find(btn => 
+      btn.className.includes('btn-primary') || btn.className.includes('btn-danger')
+    )
     
     if (confirmButton) {
-      await confirmButton.trigger('click')
+      confirmButton.click()
+      await wrapper.vm.$nextTick()
     }
 
     expect(wrapper.emitted('confirm')).toBeTruthy()
@@ -64,14 +80,20 @@ describe('ConfirmModal Component', () => {
         title: 'Confirm',
         message: 'Are you sure?'
       },
+      global: {
+        stubs: {
+          Teleport: false
+        }
+      },
       attachTo: document.body
     })
 
     await wrapper.vm.$nextTick()
 
-    const cancelButton = wrapper.find('button.btn-secondary')
-    if (cancelButton.exists()) {
-      await cancelButton.trigger('click')
+    const cancelButton = document.body.querySelector('button.btn-secondary')
+    if (cancelButton) {
+      cancelButton.click()
+      await wrapper.vm.$nextTick()
     }
 
     expect(wrapper.emitted('cancel')).toBeTruthy()
@@ -87,14 +109,20 @@ describe('ConfirmModal Component', () => {
         title: 'Confirm',
         message: 'Are you sure?'
       },
+      global: {
+        stubs: {
+          Teleport: false
+        }
+      },
       attachTo: document.body
     })
 
     await wrapper.vm.$nextTick()
 
-    const closeButton = wrapper.find('.btn-close')
-    if (closeButton.exists()) {
-      await closeButton.trigger('click')
+    const closeButton = document.body.querySelector('.btn-close')
+    if (closeButton) {
+      closeButton.click()
+      await wrapper.vm.$nextTick()
     }
 
     expect(wrapper.emitted('cancel')).toBeTruthy()
@@ -111,13 +139,18 @@ describe('ConfirmModal Component', () => {
         confirmText: 'Yes, delete',
         cancelText: 'No, keep it'
       },
+      global: {
+        stubs: {
+          Teleport: false
+        }
+      },
       attachTo: document.body
     })
 
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.text()).toContain('Yes, delete')
-    expect(wrapper.text()).toContain('No, keep it')
+    expect(document.body.textContent).toContain('Yes, delete')
+    expect(document.body.textContent).toContain('No, keep it')
     
     wrapper.unmount()
   })
@@ -130,16 +163,23 @@ describe('ConfirmModal Component', () => {
         message: 'Are you sure?',
         variant: 'danger'
       },
+      global: {
+        stubs: {
+          Teleport: false
+        }
+      },
       attachTo: document.body
     })
 
     await wrapper.vm.$nextTick()
 
-    const header = wrapper.find('.modal-header')
-    if (header.exists()) {
-      expect(header.classes()).toContain('bg-danger')
+    const header = document.body.querySelector('.modal-header')
+    if (header) {
+      expect(header.className).toContain('bg-danger')
     }
-    expect(wrapper.find('.btn-danger').exists()).toBe(true)
+    
+    const dangerButton = document.body.querySelector('.btn-danger')
+    expect(dangerButton).toBeTruthy()
     
     wrapper.unmount()
   })
@@ -151,20 +191,25 @@ describe('ConfirmModal Component', () => {
         title: 'Confirm Action',
         message: 'Please confirm'
       },
+      global: {
+        stubs: {
+          Teleport: false
+        }
+      },
       attachTo: document.body
     })
 
     await wrapper.vm.$nextTick()
 
-    const modal = wrapper.find('.modal')
-    if (modal.exists()) {
-      expect(modal.attributes('role')).toBe('dialog')
-      expect(modal.attributes('aria-modal')).toBe('true')
+    const modal = document.body.querySelector('.modal')
+    if (modal) {
+      expect(modal.getAttribute('role')).toBe('dialog')
+      expect(modal.getAttribute('aria-modal')).toBe('true')
     }
     
-    const closeButton = wrapper.find('.btn-close')
-    if (closeButton.exists()) {
-      expect(closeButton.attributes('aria-label')).toBe('Close')
+    const closeButton = document.body.querySelector('.btn-close')
+    if (closeButton) {
+      expect(closeButton.getAttribute('aria-label')).toBe('Close')
     }
     
     wrapper.unmount()
