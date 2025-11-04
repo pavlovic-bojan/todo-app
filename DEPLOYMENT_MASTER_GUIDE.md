@@ -142,17 +142,16 @@ Deployment Guides:
 
 ```
 .github/workflows/
-├── backend-deploy.yml        # Auto-deploy backend to Railway
+├── backend-deploy-render.yml # Auto-deploy backend to Render (includes migrations)
 ├── frontend-deploy.yml       # Auto-deploy frontend to Vercel
-├── tests.yml                 # Run all tests on PR/push
-└── database-migrations.yml   # Manual migration trigger
+└── tests.yml                 # Run all tests on PR/push
 ```
 
 ### **What they do:**
 
 **1. Backend Deploy (automatic):**
 - Triggers: Push to `main` (backend changes)
-- Runs: Tests → **Migrations** → Deploy → Health check
+- Runs: Tests → **Migrations** → Deploy
 - **YES, migrations run automatically!** ✅
 
 **2. Frontend Deploy (automatic):**
@@ -161,13 +160,8 @@ Deployment Guides:
 
 **3. Tests (automatic):**
 - Triggers: Every push & PR
-- Runs: Backend tests + Frontend tests + E2E smoke tests
-- Generates: Allure report
-
-**4. Database Migrations (manual):**
-- Triggers: Manual only
-- Runs: Check migrations → Apply → Verify
-- Use: When you want to run migrations separately
+- Runs: Backend tests + Frontend tests
+- Generates: Coverage reports
 
 ---
 
@@ -199,7 +193,7 @@ Deployment Guides:
 - No data loss
 
 ### **Q: Can I run migrations manually?**
-**A: YES!** Use `database-migrations.yml` workflow (manual trigger).
+**A: YES!** You can trigger the backend deployment workflow manually, which will run migrations.
 
 ---
 

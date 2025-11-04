@@ -7,10 +7,9 @@ Complete guide to setup CI/CD pipelines with GitHub Actions.
 ## 📋 **What You Get:**
 
 3 automated workflows:
-1. ✅ **Backend Deploy** - Auto-deploy backend to Railway
+1. ✅ **Backend Deploy** - Auto-deploy backend to Render (includes auto-migrations)
 2. ✅ **Frontend Deploy** - Auto-deploy frontend to Vercel
 3. ✅ **Automated Tests** - Run tests on every push/PR
-4. ✅ **Database Migrations** - Manual migration trigger
 
 ---
 
@@ -306,10 +305,9 @@ npx prisma migrate deploy  # Applies existing migrations
 
 ```
 .github/workflows/
-├── backend-deploy.yml      # Auto-deploy backend to Railway
-├── frontend-deploy.yml     # Auto-deploy frontend to Vercel
-├── tests.yml               # Run all tests on PR/push
-└── database-migrations.yml # Manual migration trigger
+├── backend-deploy-render.yml # Auto-deploy backend to Render (includes migrations)
+├── frontend-deploy.yml       # Auto-deploy frontend to Vercel
+└── tests.yml                 # Run all tests on PR/push
 ```
 
 ---
