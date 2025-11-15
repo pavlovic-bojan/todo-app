@@ -10,7 +10,7 @@ This is a monorepo containing three packages:
 
 ```
 todo-app/
-├── backend/          # Express API with Prisma ORM and SQLite
+├── backend/          # Express API with Prisma ORM and PostgreSQL
 ├── frontend/         # Vue 3 frontend application
 ├── test/             # Enterprise QA Testing Framework
 └── package.json      # Root package.json (monorepo config)
