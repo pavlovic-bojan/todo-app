@@ -28,7 +28,7 @@ todo-app/
 - ✅ JWT Authentication with Refresh Tokens
 - ✅ Swagger API Documentation
 - ✅ Logging with Winston
-- ✅ SQLite Database with Prisma ORM
+- ✅ PostgreSQL Database with Prisma ORM
 - ✅ Security: Helmet, Rate Limiting, CSRF, Input Validation
 - ✅ Comprehensive Unit & Integration Tests
 
