@@ -12,7 +12,7 @@ Create `.env` file in `backend/` folder with these variables:
 # ===================
 # DATABASE
 # ===================
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="your-db-url"
 
 # ===================
 # JWT SECRETS
@@ -30,7 +30,7 @@ NODE_ENV=development
 # ===================
 # CORS
 # ===================
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=https://todo-app-frontend-seven-rho.vercel.app
 ```
 
 ---
@@ -56,7 +56,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```env
 NODE_ENV=production
 PORT=3000
-DATABASE_URL="file:./production.db"
+DATABASE_URL="your-db-url"
 JWT_SECRET="<STRONG-RANDOM-STRING-HERE>"
 JWT_REFRESH_SECRET="<DIFFERENT-STRONG-RANDOM-STRING-HERE>"
 FRONTEND_URL=https://your-domain.com
@@ -73,7 +73,7 @@ FRONTEND_URL=https://your-domain.com
 | `JWT_REFRESH_SECRET` | ✅ Yes | - | Secret for signing refresh tokens (min 32 chars) |
 | `PORT` | ❌ No | `3000` | Server port |
 | `NODE_ENV` | ❌ No | `development` | Environment (`development`/`production`) |
-| `FRONTEND_URL` | ❌ No | `http://localhost:5173` | Frontend URL for CORS |
+| `FRONTEND_URL` | ❌ No | `https://todo-app-frontend-seven-rho.vercel.app` | Frontend URL for CORS |
 
 ---
 
@@ -83,23 +83,23 @@ FRONTEND_URL=https://your-domain.com
 ```env
 NODE_ENV=development
 PORT=3000
-DATABASE_URL="file:./dev.db"
-FRONTEND_URL=http://localhost:5173
+DATABASE_URL="your-db-url"
+FRONTEND_URL=https://todo-app-frontend-seven-rho.vercel.app
 ```
 
 ### Testing
 ```env
 NODE_ENV=test
 PORT=3001
-DATABASE_URL="file:./test.db"
-FRONTEND_URL=http://localhost:5173
+DATABASE_URL="your-db-url"
+FRONTEND_URL=https://todo-app-frontend-seven-rho.vercel.app
 ```
 
 ### Production
 ```env
 NODE_ENV=production
 PORT=80
-DATABASE_URL="file:./production.db"
+DATABASE_URL="your-db-url"
 FRONTEND_URL=https://your-production-domain.com
 ```
 
@@ -143,7 +143,7 @@ If validation fails, the server will not start.
 # Copy this file to .env and update the values
 
 # Database
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="your-db-url"
 
 # JWT Secrets (CHANGE THESE!)
 JWT_SECRET="9k2m5n8p1q4r7s0t3u6v9w2x5y8z1a4b7c0d3e6f9g2h5i8j1k4m7n0p"
@@ -154,7 +154,7 @@ PORT=3000
 NODE_ENV=development
 
 # CORS
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=https://todo-app-frontend-seven-rho.vercel.app
 ```
 
 ---
