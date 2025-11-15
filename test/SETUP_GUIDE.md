@@ -83,7 +83,7 @@ This downloads:
 
 ### Database Setup
 
-The backend should automatically create `dev.db` when it starts.
+The backend should automatically create `your-db-url` when it starts.
 
 If not:
 ```bash
