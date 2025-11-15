@@ -32,7 +32,7 @@ npm run dev
 
 ## ✅ Step 3: Create Test User
 
-Visit http://localhost:5173/register and create:
+Visit https://todo-app-frontend-seven-rho.vercel.app/register and create:
 - **Username:** `testuser`
 - **Email:** `test@example.com`
 - **Password:** `Test123456`
@@ -141,7 +141,7 @@ npx playwright test e2e/auth.spec.js --headed
 ### ❌ "Cannot connect to backend"
 ```bash
 # Check backend is running
-curl http://localhost:3000/api/health
+curl https://todo-app-xhn2.onrender.com/api/health
 
 # If not running:
 cd backend && npm run dev
@@ -150,14 +150,14 @@ cd backend && npm run dev
 ### ❌ "Cannot connect to frontend"
 ```bash
 # Check frontend is running
-curl http://localhost:5173
+curl https://todo-app-frontend-seven-rho.vercel.app
 
 # If not running:
 cd frontend && npm run dev
 ```
 
 ### ❌ "Test user not found"
-Create user manually at http://localhost:5173/register
+Create user manually at https://todo-app-frontend-seven-rho.vercel.app/register
 
 ### ❌ "Browsers not installed"
 ```bash
