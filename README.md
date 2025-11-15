@@ -81,7 +81,7 @@ npm run prisma:migrate
 
 Create `backend/.env`:
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="your-db-url"
 JWT_SECRET="your-secret-key-here"
 JWT_REFRESH_SECRET="your-refresh-secret-here"
 PORT=3000
@@ -100,9 +100,9 @@ npm run dev
 ```
 
 **5. Access Application:**
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:3000/api
-- Swagger Docs: http://localhost:3000/api-docs
+- Frontend: https://todo-app-frontend-seven-rho.vercel.app
+- Backend API: https://todo-app-xhn2.onrender.com/api/
+- Swagger Docs: https://todo-app-xhn2.onrender.com/api/docs/
 
 ---
 
