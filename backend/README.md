@@ -39,7 +39,7 @@ npm run prisma:migrate
 npm run dev
 ```
 
-Server runs on: http://localhost:3000
+Server runs on: https://todo-app-xhn2.onrender.com/api/
 
 ---
 
