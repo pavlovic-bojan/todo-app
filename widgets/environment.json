@@ -1,0 +1,1 @@
+[{"values":["Development"],"name":"Test Environment"},{"values":["http://localhost:3000"],"name":"Backend URL"},{"values":["http://localhost:5173"],"name":"Frontend URL"},{"values":["Chromium, Firefox, WebKit"],"name":"Browser"},{"values":["linux"],"name":"OS"},{"values":["v18.20.8"],"name":"Node Version"}]
