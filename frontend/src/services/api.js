@@ -115,6 +115,16 @@ api.interceptors.response.use(
       }
     }
 
+    // Handle rate limiting (429) errors
+    if (error.response?.status === 429) {
+      const retryAfter = error.response.headers['retry-after']
+      const message = error.response.data?.message || 'Too many requests. Please try again later.'
+      const errorWithRetry = new Error(message)
+      errorWithRetry.retryAfter = retryAfter
+      errorWithRetry.status = 429
+      return Promise.reject(errorWithRetry)
+    }
+
     return Promise.reject(error)
   }
 )

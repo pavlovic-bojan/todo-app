@@ -68,7 +68,17 @@ export const useAuthStore = defineStore('auth', () => {
       
       return response.data
     } catch (err) {
-      error.value = err.response?.data?.message || 'Login failed'
+      // Handle rate limiting errors with better message
+      if (err.status === 429 || err.response?.status === 429) {
+        const retryAfter = err.retryAfter || err.response?.headers['retry-after']
+        if (retryAfter) {
+          error.value = `Too many login attempts. Please try again in ${retryAfter} seconds.`
+        } else {
+          error.value = 'Too many login attempts. Please wait a few minutes before trying again.'
+        }
+      } else {
+        error.value = err.response?.data?.message || err.message || 'Login failed'
+      }
       clearAuth()
       throw err
     } finally {
