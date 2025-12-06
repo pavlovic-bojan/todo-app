@@ -1,0 +1,46 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation "Main navigation" [ref=e4]:
+    - generic [ref=e5]:
+      - link "Todo App Home" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - text: 📋 Todo App
+      - list [ref=e8]:
+        - listitem [ref=e9]:
+          - link "Go to login page" [ref=e10] [cursor=pointer]:
+            - /url: /login
+            - text: Login
+        - listitem [ref=e11]:
+          - link "Go to registration page" [ref=e12] [cursor=pointer]:
+            - /url: /register
+            - text: Register
+  - generic [ref=e13]:
+    - link "Skip to main content" [ref=e14] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e18]:
+      - heading "Login" [level=1] [ref=e19]
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]: Username *
+          - textbox "Username required" [disabled] [ref=e23]:
+            - /placeholder: Enter your username
+            - text: testuser
+        - generic [ref=e24]:
+          - generic [ref=e25]: Password *
+          - textbox "Password required" [disabled] [ref=e26]:
+            - /placeholder: Enter your password
+            - text: Test123456
+        - generic [ref=e27]:
+          - button "Logging in..." [disabled]:
+            - status
+            - text: Logging in...
+      - link "Forgot Password?" [ref=e29] [cursor=pointer]:
+        - /url: /forgot-password
+      - separator [ref=e30]
+      - generic [ref=e31]:
+        - paragraph [ref=e32]: Don't have an account?
+        - link "Register" [ref=e33] [cursor=pointer]:
+          - /url: /register
+```
