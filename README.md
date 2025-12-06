@@ -2,6 +2,7 @@
 
 A complete full-stack Todo application with user authentication, built using modern technologies in a monorepo structure.
 
+📊 **Latest Allure Report**: [View Online](https://pavlovic-bojan.github.io/todo-app/)
 ---
 
 ## 🏗️ Project Structure
