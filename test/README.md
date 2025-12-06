@@ -494,13 +494,13 @@ test('should do something @smoke @auth @critical', async () => {
 **1. Backend not running:**
 ```bash
 cd backend
-npm run dev  # Should be on http://localhost:3000
+npm run dev  # Should be on https://todo-app-xhn2.onrender.com/api/
 ```
 
 **2. Frontend not running:**
 ```bash
 cd frontend
-npm run dev  # Should be on http://localhost:5173
+npm run dev  # Should be on https://todo-app-frontend-seven-rho.vercel.app
 ```
 
 **3. Database missing:**

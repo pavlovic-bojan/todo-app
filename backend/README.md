@@ -39,15 +39,15 @@ npm run prisma:migrate
 npm run dev
 ```
 
-Server runs on: http://localhost:3000
+Server runs on: https://todo-app-xhn2.onrender.com/api/
 
 ---
 
 ## 📚 API Documentation
 
 Once server is running, visit:
-- **Swagger UI:** http://localhost:3000/api-docs
-- **API Base:** http://localhost:3000/api
+- **Swagger UI:** https://todo-app-xhn2.onrender.com/api/docs/
+- **API Base:** https://todo-app-xhn2.onrender.com/api/
 
 ---
 
@@ -57,7 +57,7 @@ Create `.env` file in `backend/` folder:
 
 ```env
 # Database
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="your-db-url"
 
 # JWT Secrets (change in production!)
 JWT_SECRET="your-very-secret-jwt-key-here-change-in-production"
@@ -68,7 +68,7 @@ PORT=3000
 NODE_ENV=development
 
 # CORS
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=https://todo-app-frontend-seven-rho.vercel.app
 ```
 
 **Important:** Change JWT secrets in production!
@@ -258,7 +258,7 @@ npm run prisma:migrate
 ## 📖 Additional Documentation
 
 - **[ENV_SETUP.md](ENV_SETUP.md)** - Complete environment variable guide
-- **[Swagger API Docs](http://localhost:3000/api-docs)** - Interactive API documentation
+- **[Swagger API Docs](https://todo-app-xhn2.onrender.com/api/docs/)** - Interactive API documentation
 
 ---
 
@@ -308,4 +308,4 @@ Production-ready backend with:
 
 ---
 
-**Need help?** Check Swagger docs at http://localhost:3000/api-docs
+**Need help?** Check Swagger docs at https://todo-app-xhn2.onrender.com/api/docs/

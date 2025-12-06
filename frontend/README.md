@@ -23,7 +23,7 @@ Vue 3 + Vite + Bootstrap 5 frontend with modern best practices and comprehensive
 ### Prerequisites
 - Node.js v18+
 - npm v9+
-- Backend running on http://localhost:3000
+- Backend running on https://todo-app-xhn2.onrender.com/api/
 
 ### Installation
 
@@ -35,7 +35,7 @@ npm install
 npm run dev
 ```
 
-Application runs on: http://localhost:5173
+Application runs on: https://todo-app-frontend-seven-rho.vercel.app
 
 ---
 
@@ -278,8 +278,8 @@ npm run lint         # Lint and fix files
 ### CORS Errors
 Make sure backend is running and CORS is configured:
 ```javascript
-// Backend should allow: http://localhost:5173
-FRONTEND_URL=http://localhost:5173
+// Backend should allow: https://todo-app-frontend-seven-rho.vercel.app
+FRONTEND_URL=https://todo-app-frontend-seven-rho.vercel.app
 ```
 
 ### Token Refresh Loop
@@ -369,4 +369,4 @@ Production-ready frontend with:
 
 ---
 
-**Need help?** Check [main README](../README.md) or backend API docs.
+**Need help?** Check [main README](../README.md) or [backend API docs](https://todo-app-xhn2.onrender.com/api/docs/).

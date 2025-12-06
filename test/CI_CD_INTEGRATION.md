@@ -432,8 +432,8 @@ Run different test types in parallel:
 
 Set in CI/CD:
 ```bash
-BACKEND_URL=http://localhost:3000
-FRONTEND_URL=http://localhost:5173
+BACKEND_URL=https://todo-app-xhn2.onrender.com/api/
+FRONTEND_URL=https://todo-app-frontend-seven-rho.vercel.app
 TEST_ENV=ci
 HEADLESS=true
 ```
