@@ -108,12 +108,21 @@ module.exports = defineConfig({
       port: 3000,
       timeout: 120000,
       reuseExistingServer: !process.env.CI,
+      env: {
+        DATABASE_URL: process.env.DATABASE_URL || 'file:./dev.db',
+        JWT_SECRET: process.env.JWT_SECRET || 'test-secret-key',
+        JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || 'test-refresh-secret',
+        PORT: '3000'
+      }
     },
     {
       command: 'cd ../frontend && npm run dev',
       port: 5173,
       timeout: 120000,
       reuseExistingServer: !process.env.CI,
+      env: {
+        VITE_API_URL: process.env.VITE_API_URL || 'http://localhost:3000'
+      }
     }
   ],
 })

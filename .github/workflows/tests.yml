@@ -109,26 +109,12 @@ jobs:
           npm run prisma:generate
           npx prisma migrate deploy
 
-      - name: 🚀 Start backend
+      - name: 🧪 Run smoke tests
         env:
           DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
           JWT_SECRET: test-secret-key-for-ci-pipeline-only
           JWT_REFRESH_SECRET: test-refresh-secret-for-ci-only
-          PORT: 3000
-        run: |
-          cd backend
-          npm run dev &
-          sleep 10
-
-      - name: 🎨 Start frontend
-        env:
           VITE_API_URL: http://localhost:3000
-        run: |
-          cd frontend
-          npm run dev &
-          sleep 10
-
-      - name: 🧪 Run smoke tests
         run: |
           cd test
           npm run test:smoke
@@ -137,7 +123,14 @@ jobs:
         if: always()
         run: |
           cd test
-          npx allure generate allure-results --clean -o allure-report
+          if [ -d "allure-results" ] && [ "$(ls -A allure-results)" ]; then
+            npx allure generate allure-results --clean -o allure-report
+            echo "✅ Allure report generated successfully"
+          else
+            echo "⚠️ No test results found, creating empty report"
+            mkdir -p allure-report
+            echo '<!DOCTYPE html><html><head><title>No Test Results</title></head><body><h1>No test results available</h1><p>Tests did not produce any results.</p></body></html>' > allure-report/index.html
+          fi
 
       - name: 📤 Upload Allure report as artifact
         if: always()
