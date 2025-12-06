@@ -7,17 +7,37 @@ const { test, expect } = require('@playwright/test')
 const { allure } = require('allure-playwright')
 const LoginPage = require('../page-objects/LoginPage')
 const DashboardPage = require('../page-objects/DashboardPage')
+const authHelper = require('../helpers/auth.helper')
+
+// Test user that will be created for todo tests
+let testUser = null
 
 test.describe('Todo Management', () => {
   let dashboard
 
+  test.beforeAll(async () => {
+    // Create a test user for todo tests
+    try {
+      const { userData } = await authHelper.createTestUser()
+      testUser = userData
+    } catch (error) {
+      console.warn('Failed to create test user in beforeAll, will try in test:', error.message)
+    }
+  })
+
   test.beforeEach(async ({ page }) => {
     await allure.epic('Todo Management')
+    
+    // Ensure test user exists
+    if (!testUser) {
+      const { userData } = await authHelper.createTestUser()
+      testUser = userData
+    }
     
     // Login before each test
     const loginPage = new LoginPage(page)
     await loginPage.goto()
-    await loginPage.login('testuser', 'Test123456')
+    await loginPage.login(testUser.username, testUser.password)
     
     dashboard = new DashboardPage(page)
     await dashboard.goto()

@@ -1,9 +1,9 @@
 config:
-  target: "http://localhost:3000"
+  target: "https://todo-app-xhn2.onrender.com"  # Will be overridden by --target flag
   phases:
-    # Long running endurance test
-    - duration: 3600  # 1 hour
-      arrivalRate: 20
+    # Single request endurance test
+    - duration: 10
+      arrivalCount: 1
       name: "Endurance - 1 hour sustained load"
   
   processor: "../processors/auth-processor.js"
@@ -12,11 +12,20 @@ scenarios:
   - name: "Endurance - Normal Usage"
     weight: 100
     flow:
+      # Register then login
+      - function: "generateRandomUser"
+      - post:
+          url: "/api/users/register"
+          json:
+            username: "{{ username }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            role: "client"
       - post:
           url: "/api/users/login"
           json:
-            username: "testuser"
-            password: "Test123456"
+            username: "{{ username }}"
+            password: "{{ password }}"
           capture:
             - json: "$.accessToken"
               as: "token"

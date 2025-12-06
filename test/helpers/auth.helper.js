@@ -57,10 +57,23 @@ class AuthHelper {
 
     const response = await this.registerUser(userData)
     
+    // If rate limited, wait and retry once
+    if (response.status === 429) {
+      await new Promise(resolve => setTimeout(resolve, 3000))
+      const retryResponse = await this.registerUser(userData)
+      if (retryResponse.status === 201) {
+        await allure.attachment('Test User Created', JSON.stringify(userData, null, 2), 'application/json')
+        return { userData, response: retryResponse }
+      }
+      // If retry also fails, return the response anyway
+      return { userData, response: retryResponse }
+    }
+    
     if (response.status === 201) {
       await allure.attachment('Test User Created', JSON.stringify(userData, null, 2), 'application/json')
     }
 
+    // Always return userData and response, even if status is not 201
     return { userData, response }
   }
 
@@ -68,14 +81,67 @@ class AuthHelper {
    * Create and login test user
    */
   async createAndLoginTestUser(role = 'client') {
-    const { userData, response: registerResponse } = await this.createTestUser(role)
+    let userData, registerResponse
     
-    if (registerResponse.status === 201) {
-      const loginResponse = await this.loginUser(userData.username, userData.password)
-      return { userData, token: loginResponse.data?.accessToken }
+    try {
+      const result = await this.createTestUser(role)
+      userData = result.userData
+      registerResponse = result.response
+    } catch (error) {
+      throw new Error(`Failed to create test user: ${error.message}`)
     }
     
-    throw new Error('Failed to create test user')
+    // If rate limited, wait and retry once
+    if (registerResponse.status === 429) {
+      await new Promise(resolve => setTimeout(resolve, 3000))
+      try {
+        const retryResult = await this.createTestUser(role)
+        if (retryResult.response.status === 201) {
+          // Add small delay before login
+          await new Promise(resolve => setTimeout(resolve, 500))
+          const loginResponse = await this.loginUser(retryResult.userData.username, retryResult.userData.password)
+          if (loginResponse.status === 200 && loginResponse.data?.accessToken) {
+            return { userData: retryResult.userData, token: loginResponse.data.accessToken }
+          }
+          // If login fails, try one more time
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          const retryLogin = await this.loginUser(retryResult.userData.username, retryResult.userData.password)
+          if (retryLogin.status === 200 && retryLogin.data?.accessToken) {
+            return { userData: retryResult.userData, token: retryLogin.data.accessToken }
+          }
+          throw new Error(`Login failed after user creation - status ${loginResponse.status}`)
+        }
+        // If retry also rate limited, throw error
+        throw new Error(`User creation still rate limited after retry - status ${retryResult.response.status}`)
+      } catch (error) {
+        throw new Error(`Failed to create test user on retry: ${error.message}`)
+      }
+    }
+    
+    if (registerResponse.status === 201) {
+      // Add small delay before login
+      await new Promise(resolve => setTimeout(resolve, 500))
+      try {
+        const loginResponse = await this.loginUser(userData.username, userData.password)
+        if (loginResponse.status === 200 && loginResponse.data?.accessToken) {
+          return { userData, token: loginResponse.data.accessToken }
+        }
+        // If login rate limited, retry once
+        if (loginResponse.status === 429) {
+          await new Promise(resolve => setTimeout(resolve, 3000))
+          const retryLogin = await this.loginUser(userData.username, userData.password)
+          if (retryLogin.status === 200 && retryLogin.data?.accessToken) {
+            return { userData, token: retryLogin.data.accessToken }
+          }
+        }
+        throw new Error(`Login failed with status ${loginResponse.status}`)
+      } catch (error) {
+        throw new Error(`Failed to login test user: ${error.message}`)
+      }
+    }
+    
+    // If status is not 201 or 429, throw error
+    throw new Error(`Failed to create test user - received status ${registerResponse.status}`)
   }
 
   /**

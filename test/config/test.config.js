@@ -4,9 +4,9 @@
  */
 
 module.exports = {
-  // Base URLs
+  // Base URLs - Always use hosted servers by default
   urls: (() => {
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000'
+    const backendUrl = process.env.BACKEND_URL || 'https://todo-app-xhn2.onrender.com'
     // If BACKEND_URL already contains /api, use it as-is, otherwise append /api
     const apiUrl = backendUrl.includes('/api') 
       ? backendUrl 
@@ -14,7 +14,7 @@ module.exports = {
     
     return {
       backend: backendUrl,
-      frontend: process.env.FRONTEND_URL || 'http://localhost:5173',
+      frontend: process.env.FRONTEND_URL || 'https://todo-app-frontend-seven-rho.vercel.app',
       api: apiUrl
     }
   })(),

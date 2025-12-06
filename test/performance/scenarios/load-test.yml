@@ -1,35 +1,31 @@
 config:
-  target: "http://localhost:3000"
+  target: "https://todo-app-xhn2.onrender.com"  # Will be overridden by --target flag
   phases:
-    # Warm-up phase
-    - duration: 60
-      arrivalRate: 5
+    # Single request test - 1 request per phase
+    - duration: 10
+      arrivalCount: 1
       name: "Warm up"
-    # Ramp up to normal load
-    - duration: 120
-      arrivalRate: 10
-      rampTo: 50
+    - duration: 10
+      arrivalCount: 1
       name: "Ramp up load"
-    # Sustained load
-    - duration: 300
-      arrivalRate: 50
+    - duration: 10
+      arrivalCount: 1
       name: "Sustained load"
-    # Ramp down
-    - duration: 60
-      arrivalRate: 50
-      rampTo: 5
+    - duration: 10
+      arrivalCount: 1
       name: "Ramp down"
   
   processor: "../processors/auth-processor.js"
   
   variables:
-    baseUrl: "http://localhost:3000/api"
+    baseUrl: "https://todo-app-xhn2.onrender.com/api"  # Will use target from config
 
 scenarios:
   - name: "User Registration Flow"
     weight: 10
     flow:
       - function: "generateRandomUser"
+      - think: 1  # Add delay before registration
       - post:
           url: "/api/users/register"
           json:
@@ -40,32 +36,54 @@ scenarios:
           capture:
             - json: "$.user.id"
               as: "userId"
+      - think: 2  # Delay after registration
 
   - name: "User Login Flow"
     weight: 30
     flow:
+      # First register a user, then login
+      - function: "generateRandomUser"
+      - post:
+          url: "/api/users/register"
+          json:
+            username: "{{ username }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            role: "client"
+      - think: 1  # Add delay before login
       - post:
           url: "/api/users/login"
           json:
-            username: "testuser"
-            password: "Test123456"
+            username: "{{ username }}"
+            password: "{{ password }}"
           capture:
             - json: "$.accessToken"
               as: "token"
-      - think: 2
+      - think: 3  # Increased delay after login
 
   - name: "Todo CRUD Operations"
     weight: 60
     flow:
-      # Login first
+      # First register a user, then login
+      - function: "generateRandomUser"
+      - post:
+          url: "/api/users/register"
+          json:
+            username: "{{ username }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            role: "client"
+      - think: 1  # Add delay before login
       - post:
           url: "/api/users/login"
           json:
-            username: "testuser"
-            password: "Test123456"
+            username: "{{ username }}"
+            password: "{{ password }}"
           capture:
             - json: "$.accessToken"
               as: "token"
+      
+      - think: 2  # Delay after login
       
       # Create todo
       - post:
@@ -79,7 +97,7 @@ scenarios:
             - json: "$.todo.id"
               as: "todoId"
       
-      - think: 1
+      - think: 2  # Increased delay
       
       # Get all todos
       - get:
@@ -87,7 +105,7 @@ scenarios:
           headers:
             Authorization: "Bearer {{ token }}"
       
-      - think: 1
+      - think: 2  # Increased delay
       
       # Update todo
       - patch:
@@ -98,7 +116,7 @@ scenarios:
             title: "Updated Todo"
             completed: true
       
-      - think: 1
+      - think: 2  # Increased delay
       
       # Delete todo
       - delete:

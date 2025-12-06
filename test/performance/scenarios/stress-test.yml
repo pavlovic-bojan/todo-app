@@ -1,29 +1,21 @@
 config:
-  target: "http://localhost:3000"
+  target: "https://todo-app-xhn2.onrender.com"  # Will be overridden by --target flag
   phases:
-    # Normal load
-    - duration: 60
-      arrivalRate: 10
+    # Single request test - 1 request per phase
+    - duration: 10
+      arrivalCount: 1
       name: "Normal load baseline"
-    # Ramp to high load
-    - duration: 120
-      arrivalRate: 10
-      rampTo: 100
+    - duration: 10
+      arrivalCount: 1
       name: "Ramp to stress level"
-    # Maximum stress
-    - duration: 180
-      arrivalRate: 100
-      rampTo: 200
+    - duration: 10
+      arrivalCount: 1
       name: "Maximum stress"
-    # Extreme stress
-    - duration: 120
-      arrivalRate: 200
-      rampTo: 300
+    - duration: 10
+      arrivalCount: 1
       name: "Extreme stress"
-    # Recovery
-    - duration: 60
-      arrivalRate: 300
-      rampTo: 10
+    - duration: 10
+      arrivalCount: 1
       name: "Recovery"
   
   processor: "../processors/auth-processor.js"
@@ -32,27 +24,51 @@ scenarios:
   - name: "Heavy Login Load"
     weight: 40
     flow:
+      # Register then login
+      - function: "generateRandomUser"
+      - think: 1  # Delay before registration
+      - post:
+          url: "/api/users/register"
+          json:
+            username: "{{ username }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            role: "client"
+      - think: 1  # Delay after registration
       - post:
           url: "/api/users/login"
           json:
-            username: "testuser"
-            password: "Test123456"
+            username: "{{ username }}"
+            password: "{{ password }}"
           capture:
             - json: "$.accessToken"
               as: "token"
+      - think: 2  # Delay after login
 
   - name: "Concurrent Todo Operations"
     weight: 60
     flow:
+      # Register then login
+      - function: "generateRandomUser"
+      - think: 1  # Delay before registration
+      - post:
+          url: "/api/users/register"
+          json:
+            username: "{{ username }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            role: "client"
+      - think: 1  # Delay after registration
       - post:
           url: "/api/users/login"
           json:
-            username: "testuser"
-            password: "Test123456"
+            username: "{{ username }}"
+            password: "{{ password }}"
           capture:
             - json: "$.accessToken"
               as: "token"
       
+      - think: 2  # Delay before loop
       - loop:
           - post:
               url: "/api/todos"

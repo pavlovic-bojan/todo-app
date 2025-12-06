@@ -7,8 +7,20 @@ const { allure } = require('allure-playwright')
 const RegisterPage = require('../page-objects/RegisterPage')
 const LoginPage = require('../page-objects/LoginPage')
 const DashboardPage = require('../page-objects/DashboardPage')
+const authHelper = require('../helpers/auth.helper')
+
+// Test user for validation tests
+let testUser = null
 
 test.describe('Form Validation Tests', () => {
+  test.beforeAll(async () => {
+    try {
+      const { userData } = await authHelper.createTestUser()
+      testUser = userData
+    } catch (error) {
+      console.warn('Failed to create test user:', error.message)
+    }
+  })
   
   test('should validate username format @validation @ui', async ({ page }) => {
     await allure.epic('Validation')
@@ -102,10 +114,16 @@ test.describe('Form Validation Tests', () => {
     await allure.severity('normal')
     await allure.tag('@validation', '@todo')
 
+    // Ensure test user exists
+    if (!testUser) {
+      const { userData } = await authHelper.createTestUser()
+      testUser = userData
+    }
+
     // Login first
     const loginPage = new LoginPage(page)
     await loginPage.goto()
-    await loginPage.login('testuser', 'Test123456')
+    await loginPage.login(testUser.username, testUser.password)
 
     const dashboard = new DashboardPage(page)
     await dashboard.goto()

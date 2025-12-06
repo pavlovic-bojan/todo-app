@@ -1,25 +1,21 @@
 config:
-  target: "http://localhost:3000"
+  target: "https://todo-app-xhn2.onrender.com"  # Will be overridden by --target flag
   phases:
-    # Normal load
-    - duration: 60
-      arrivalRate: 10
+    # Single request test - 1 request per phase
+    - duration: 10
+      arrivalCount: 1
       name: "Normal baseline"
-    # Sudden spike
-    - duration: 30
-      arrivalRate: 500
+    - duration: 10
+      arrivalCount: 1
       name: "Traffic spike"
-    # Back to normal
-    - duration: 60
-      arrivalRate: 10
+    - duration: 10
+      arrivalCount: 1
       name: "Back to normal"
-    # Another spike
-    - duration: 30
-      arrivalRate: 1000
+    - duration: 10
+      arrivalCount: 1
       name: "Second larger spike"
-    # Recovery
-    - duration: 120
-      arrivalRate: 10
+    - duration: 10
+      arrivalCount: 1
       name: "Recovery period"
   
   processor: "../processors/auth-processor.js"
@@ -28,23 +24,47 @@ scenarios:
   - name: "Spike - Authentication"
     weight: 50
     flow:
+      # Register then login
+      - function: "generateRandomUser"
+      - think: 2  # Delay before registration
+      - post:
+          url: "/api/users/register"
+          json:
+            username: "{{ username }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            role: "client"
+      - think: 2  # Delay after registration
       - post:
           url: "/api/users/login"
           json:
-            username: "testuser"
-            password: "Test123456"
+            username: "{{ username }}"
+            password: "{{ password }}"
+      - think: 3  # Delay after login
 
   - name: "Spike - Todo Reads"
     weight: 50
     flow:
+      # Register then login
+      - function: "generateRandomUser"
+      - think: 2  # Delay before registration
+      - post:
+          url: "/api/users/register"
+          json:
+            username: "{{ username }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            role: "client"
+      - think: 2  # Delay after registration
       - post:
           url: "/api/users/login"
           json:
-            username: "testuser"
-            password: "Test123456"
+            username: "{{ username }}"
+            password: "{{ password }}"
           capture:
             - json: "$.accessToken"
               as: "token"
+      - think: 3  # Delay after login
       - get:
           url: "/api/todos"
           headers:

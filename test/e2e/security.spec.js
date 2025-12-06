@@ -7,8 +7,20 @@ const { allure } = require('allure-playwright')
 const RegisterPage = require('../page-objects/RegisterPage')
 const LoginPage = require('../page-objects/LoginPage')
 const DashboardPage = require('../page-objects/DashboardPage')
+const authHelper = require('../helpers/auth.helper')
+
+// Test user for security tests
+let testUser = null
 
 test.describe('Security Tests', () => {
+  test.beforeAll(async () => {
+    try {
+      const { userData } = await authHelper.createTestUser()
+      testUser = userData
+    } catch (error) {
+      console.warn('Failed to create test user:', error.message)
+    }
+  })
 
   test('should prevent XSS in username field @security @ui @critical', async ({ page }) => {
     await allure.epic('Security')
@@ -56,9 +68,15 @@ test.describe('Security Tests', () => {
     await allure.severity('blocker')
     await allure.tag('@security', '@xss')
 
+    // Ensure test user exists
+    if (!testUser) {
+      const { userData } = await authHelper.createTestUser()
+      testUser = userData
+    }
+
     const loginPage = new LoginPage(page)
     await loginPage.goto()
-    await loginPage.login('testuser', 'Test123456')
+    await loginPage.login(testUser.username, testUser.password)
 
     const dashboard = new DashboardPage(page)
     await dashboard.goto()
@@ -128,7 +146,12 @@ test.describe('Security Tests', () => {
     await allure.step('Verify SameSite cookie attribute', async () => {
       const loginPage = new LoginPage(page)
       await loginPage.goto()
-      await loginPage.login('testuser', 'Test123456')
+      // Ensure test user exists
+      if (!testUser) {
+        const { userData } = await authHelper.createTestUser()
+        testUser = userData
+      }
+      await loginPage.login(testUser.username, testUser.password)
       
       // Check cookies
       const cookies = await page.context().cookies()
@@ -175,9 +198,15 @@ test.describe('Security Tests', () => {
     await allure.severity('minor')
     await allure.tag('@validation')
 
+    // Ensure test user exists
+    if (!testUser) {
+      const { userData } = await authHelper.createTestUser()
+      testUser = userData
+    }
+
     const loginPage = new LoginPage(page)
     await loginPage.goto()
-    await loginPage.login('testuser', 'Test123456')
+    await loginPage.login(testUser.username, testUser.password)
 
     const dashboard = new DashboardPage(page)
     await dashboard.goto()

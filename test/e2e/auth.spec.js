@@ -10,8 +10,23 @@ const RegisterPage = require('../page-objects/RegisterPage')
 const ForgotPasswordPage = require('../page-objects/ForgotPasswordPage')
 const ResetPasswordPage = require('../page-objects/ResetPasswordPage')
 const DashboardPage = require('../page-objects/DashboardPage')
+const authHelper = require('../helpers/auth.helper')
+const testConfig = require('../config/test.config')
+
+// Test user that will be created for login tests
+let testUser = null
 
 test.describe('Authentication Flow', () => {
+  test.beforeAll(async () => {
+    // Create a test user for login tests
+    try {
+      const { userData } = await authHelper.createTestUser()
+      testUser = userData
+    } catch (error) {
+      console.warn('Failed to create test user in beforeAll, will try in test:', error.message)
+    }
+  })
+
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
   })
@@ -83,6 +98,12 @@ test.describe('Authentication Flow', () => {
     await allure.severity('blocker')
     await allure.tag('@smoke', '@auth', '@critical')
 
+    // Ensure test user exists
+    if (!testUser) {
+      const { userData } = await authHelper.createTestUser()
+      testUser = userData
+    }
+
     const loginPage = new LoginPage(page)
     
     await allure.step('Navigate to login page', async () => {
@@ -91,7 +112,7 @@ test.describe('Authentication Flow', () => {
     })
 
     await allure.step('Enter valid credentials', async () => {
-      await loginPage.login('testuser', 'Test123456')
+      await loginPage.login(testUser.username, testUser.password)
     })
 
     await allure.step('Verify redirect to dashboard', async () => {
@@ -100,7 +121,7 @@ test.describe('Authentication Flow', () => {
 
     await allure.step('Verify user info displayed', async () => {
       const dashboard = new DashboardPage(page)
-      await dashboard.assertLoggedIn('testuser')
+      await dashboard.assertLoggedIn(testUser.username)
     })
   })
 
@@ -207,13 +228,19 @@ test.describe('Authentication Flow', () => {
     await allure.severity('critical')
     await allure.tag('@smoke', '@auth')
 
+    // Ensure test user exists
+    if (!testUser) {
+      const { userData } = await authHelper.createTestUser()
+      testUser = userData
+    }
+
     // First login
     const loginPage = new LoginPage(page)
     await loginPage.goto()
-    await loginPage.login('testuser', 'Test123456')
+    await loginPage.login(testUser.username, testUser.password)
     
     const dashboard = new DashboardPage(page)
-    await dashboard.assertLoggedIn('testuser')
+    await dashboard.assertLoggedIn(testUser.username)
 
     await allure.step('Click logout button', async () => {
       await dashboard.logout()

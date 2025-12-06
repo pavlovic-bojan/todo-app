@@ -1,7 +1,17 @@
 const { defineConfig, devices } = require('@playwright/test')
+require('dotenv').config()
+const testConfig = require('./config/test.config')
 
 module.exports = defineConfig({
-  testDir: './e2e',
+  // Include e2e, database, and api folders
+  testDir: './',
+  testMatch: [
+    '**/e2e/**/*.spec.js',
+    '**/database/**/*.test.js',
+    '**/database/**/*.db.test.js',
+    '**/api/**/*.test.js',
+    '**/api/**/*.api.test.js'
+  ],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
@@ -44,8 +54,8 @@ module.exports = defineConfig({
       ],
       environmentInfo: {
         'Test Environment': process.env.CI ? 'CI/CD' : 'Development',
-        'Backend URL': process.env.BACKEND_URL || 'http://localhost:3000',
-        'Frontend URL': process.env.FRONTEND_URL || 'http://localhost:5173',
+        'Backend URL': process.env.BACKEND_URL,
+        'Frontend URL': process.env.FRONTEND_URL,
         'Browser': 'Chromium, Firefox, WebKit',
         'OS': process.platform,
         'Node Version': process.version
@@ -54,7 +64,7 @@ module.exports = defineConfig({
   ],
 
   use: {
-    baseURL: process.env.FRONTEND_URL || 'http://localhost:5173',
+    baseURL: process.env.FRONTEND_URL || testConfig.urls.frontend,
     
     // Screenshots
     screenshot: 'only-on-failure',
@@ -72,14 +82,31 @@ module.exports = defineConfig({
     // Viewport
     viewport: { width: 1280, height: 720 },
     
-    // Ignore HTTPS errors (for dev)
+    // Ignore HTTPS errors (for hosted servers)
     ignoreHTTPSErrors: true,
   },
 
   // Test projects for different browsers
   projects: [
+    // API tests - run only once (no browser needed)
+    {
+      name: 'api',
+      testMatch: [
+        '**/api/**/*.test.js',
+        '**/api/**/*.api.test.js'
+      ],
+      use: {
+        // API tests don't need browser, but we need baseURL for API calls
+        baseURL: process.env.BACKEND_URL || testConfig.urls.api,
+      },
+      timeout: 60000, // 60 seconds for API tests (longer for rate limiting)
+    },
+    // E2E tests - run in all browsers
     {
       name: 'chromium',
+      testMatch: [
+        '**/e2e/**/*.spec.js'
+      ],
       use: { 
         ...devices['Desktop Chrome'],
         // Additional Allure metadata
@@ -88,48 +115,40 @@ module.exports = defineConfig({
     },
     {
       name: 'firefox',
+      testMatch: [
+        '**/e2e/**/*.spec.js'
+      ],
       use: { ...devices['Desktop Firefox'] },
     },
     {
       name: 'webkit',
+      testMatch: [
+        '**/e2e/**/*.spec.js'
+      ],
       use: { ...devices['Desktop Safari'] },
     },
     // Mobile viewports
     {
       name: 'mobile-chrome',
+      testMatch: [
+        '**/e2e/**/*.spec.js'
+      ],
       use: { ...devices['Pixel 5'] },
     },
-  ],
-
-  // Web Server - Only start servers if URLs are not provided (local development)
-  webServer: process.env.FRONTEND_URL || process.env.BACKEND_URL ? [] : [
+    // Database tests - run only once
     {
-      command: 'cd ../backend && npm run dev',
-      port: 3000,
-      timeout: 120000,
-      reuseExistingServer: !process.env.CI,
-      stdout: 'pipe',
-      stderr: 'pipe',
-      url: 'http://localhost:3000/api/health',
-      env: {
-        DATABASE_URL: process.env.DATABASE_URL || 'file:../backend/prisma/dev.db',
-        JWT_SECRET: process.env.JWT_SECRET || 'test-secret-key-for-ci-pipeline-only',
-        JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || 'test-refresh-secret-for-ci-only',
-        PORT: '3000',
-        NODE_ENV: 'test'
-      }
+      name: 'database',
+      testMatch: [
+        '**/database/**/*.test.js',
+        '**/database/**/*.db.test.js'
+      ],
+      use: {
+        // Database tests don't need browser
+        baseURL: process.env.BACKEND_URL || testConfig.urls.api,
+      },
     },
-    {
-      command: 'cd ../frontend && npm run dev',
-      port: 5173,
-      timeout: 120000,
-      reuseExistingServer: !process.env.CI,
-      stdout: 'pipe',
-      stderr: 'pipe',
-      url: 'http://localhost:5173',
-      env: {
-        VITE_API_URL: process.env.VITE_API_URL || 'http://localhost:3000'
-      }
-    }
   ],
+  
+  // No webServer - always use hosted servers
+  // webServer property is not included, so Playwright won't try to start local servers
 })
