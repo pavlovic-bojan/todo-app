@@ -99,6 +99,21 @@ jobs:
           cd test
           npx playwright install --with-deps chromium
 
+      - name: 🔍 Verify servers are accessible
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL || 'https://todo-app-xhn2.onrender.com' }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL || 'https://todo-app-frontend-seven-rho.vercel.app' }}
+        run: |
+          echo "🔍 Checking backend health..."
+          BACKEND_API_URL="$BACKEND_URL"
+          if [[ ! "$BACKEND_URL" == *"/api"* ]]; then
+            BACKEND_API_URL="$BACKEND_URL/api"
+          fi
+          curl -f "$BACKEND_API_URL/health" || echo "⚠️ Backend health check failed, but continuing..."
+          
+          echo "🔍 Checking frontend..."
+          curl -f "$FRONTEND_URL" || echo "⚠️ Frontend check failed, but continuing..."
+
       - name: 🧪 Run smoke tests
         env:
           BACKEND_URL: ${{ secrets.BACKEND_URL || 'https://todo-app-xhn2.onrender.com' }}

@@ -65,9 +65,9 @@ module.exports = defineConfig({
     // Trace
     trace: 'retain-on-failure',
     
-    // Timeouts
-    actionTimeout: 15000,
-    navigationTimeout: 30000,
+    // Timeouts - Increased for hosted servers
+    actionTimeout: process.env.CI ? 30000 : 15000,
+    navigationTimeout: process.env.CI ? 60000 : 30000,
     
     // Viewport
     viewport: { width: 1280, height: 720 },

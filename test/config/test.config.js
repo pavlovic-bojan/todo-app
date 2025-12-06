@@ -5,11 +5,19 @@
 
 module.exports = {
   // Base URLs
-  urls: {
-    backend: process.env.BACKEND_URL || 'http://localhost:3000',
-    frontend: process.env.FRONTEND_URL || 'http://localhost:5173',
-    api: process.env.BACKEND_URL ? `${process.env.BACKEND_URL}/api` : 'http://localhost:3000/api'
-  },
+  urls: (() => {
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000'
+    // If BACKEND_URL already contains /api, use it as-is, otherwise append /api
+    const apiUrl = backendUrl.includes('/api') 
+      ? backendUrl 
+      : `${backendUrl.replace(/\/$/, '')}/api`
+    
+    return {
+      backend: backendUrl,
+      frontend: process.env.FRONTEND_URL || 'http://localhost:5173',
+      api: apiUrl
+    }
+  })(),
 
   // Timeouts (in milliseconds)
   timeouts: {
