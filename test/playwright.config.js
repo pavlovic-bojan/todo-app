@@ -43,9 +43,9 @@ module.exports = defineConfig({
         }
       ],
       environmentInfo: {
-        'Test Environment': 'Development',
-        'Backend URL': 'http://localhost:3000',
-        'Frontend URL': 'http://localhost:5173',
+        'Test Environment': process.env.CI ? 'CI/CD' : 'Development',
+        'Backend URL': process.env.BACKEND_URL || 'http://localhost:3000',
+        'Frontend URL': process.env.FRONTEND_URL || 'http://localhost:5173',
         'Browser': 'Chromium, Firefox, WebKit',
         'OS': process.platform,
         'Node Version': process.version
@@ -54,7 +54,7 @@ module.exports = defineConfig({
   ],
 
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: process.env.FRONTEND_URL || 'http://localhost:5173',
     
     // Screenshots
     screenshot: 'only-on-failure',
@@ -101,18 +101,22 @@ module.exports = defineConfig({
     },
   ],
 
-  // Web Server - Auto-start backend and frontend
-  webServer: [
+  // Web Server - Only start servers if URLs are not provided (local development)
+  webServer: process.env.FRONTEND_URL || process.env.BACKEND_URL ? [] : [
     {
       command: 'cd ../backend && npm run dev',
       port: 3000,
       timeout: 120000,
       reuseExistingServer: !process.env.CI,
+      stdout: 'pipe',
+      stderr: 'pipe',
+      url: 'http://localhost:3000/api/health',
       env: {
-        DATABASE_URL: process.env.DATABASE_URL || 'file:./dev.db',
-        JWT_SECRET: process.env.JWT_SECRET || 'test-secret-key',
-        JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || 'test-refresh-secret',
-        PORT: '3000'
+        DATABASE_URL: process.env.DATABASE_URL || 'file:../backend/prisma/dev.db',
+        JWT_SECRET: process.env.JWT_SECRET || 'test-secret-key-for-ci-pipeline-only',
+        JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || 'test-refresh-secret-for-ci-only',
+        PORT: '3000',
+        NODE_ENV: 'test'
       }
     },
     {
@@ -120,6 +124,9 @@ module.exports = defineConfig({
       port: 5173,
       timeout: 120000,
       reuseExistingServer: !process.env.CI,
+      stdout: 'pipe',
+      stderr: 'pipe',
+      url: 'http://localhost:5173',
       env: {
         VITE_API_URL: process.env.VITE_API_URL || 'http://localhost:3000'
       }
