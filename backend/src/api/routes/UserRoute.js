@@ -109,6 +109,8 @@ router.post('/login', authLimiter, validateUserLogin, UserController.loginUser)
  *       401:
  *         description: Invalid or expired refresh token
  */
+// Refresh endpoint should not have authLimiter to avoid blocking legitimate refresh requests
+// But we still apply general rate limiter which is more lenient
 router.post('/refresh', UserController.refreshToken)
 
 /**

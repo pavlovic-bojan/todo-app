@@ -10,6 +10,8 @@ const api = axios.create({
 
 let isRefreshing = false
 let failedQueue = []
+let lastRefreshTime = 0
+const REFRESH_COOLDOWN = 5000 // 5 seconds cooldown between refresh attempts
 
 const processQueue = (error, token = null) => {
   failedQueue.forEach(prom => {
@@ -45,8 +47,10 @@ api.interceptors.response.use(
 
     // If error is 401 and we haven't tried to refresh yet
     if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        // If already refreshing, queue this request
+      // Check if we're already refreshing or if we recently tried to refresh
+      const now = Date.now()
+      if (isRefreshing || (now - lastRefreshTime < REFRESH_COOLDOWN)) {
+        // If already refreshing or in cooldown, queue this request
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject })
         }).then(token => {
@@ -57,8 +61,23 @@ api.interceptors.response.use(
         })
       }
 
+      // Don't retry if this is already a refresh request to avoid infinite loop
+      if (originalRequest.url?.includes('/users/refresh')) {
+        // Refresh failed - logout user
+        sessionStorage.removeItem('accessToken')
+        sessionStorage.removeItem('user')
+        
+        // Redirect to login
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login'
+        }
+        
+        return Promise.reject(error)
+      }
+
       originalRequest._retry = true
       isRefreshing = true
+      lastRefreshTime = now
 
       try {
         // Try to refresh the token
