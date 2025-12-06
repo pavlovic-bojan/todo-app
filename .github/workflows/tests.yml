@@ -71,6 +71,8 @@ jobs:
     name: E2E Tests (Smoke)
     runs-on: ubuntu-latest
     needs: [backend-tests, frontend-tests] # Run after unit tests pass
+    permissions:
+      contents: write
     
     steps:
       - name: 📥 Checkout code
@@ -80,6 +82,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
+
+      - name: ☕ Setup Java for Allure
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: 📦 Install all dependencies
         run: |
@@ -128,9 +137,9 @@ jobs:
         if: always()
         run: |
           cd test
-          npm run report:generate
+          npx allure generate allure-results --clean -o allure-report
 
-      - name: 📤 Upload Allure report
+      - name: 📤 Upload Allure report as artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -145,4 +154,21 @@ jobs:
           name: test-screenshots
           path: test/test-results/
           retention-days: 7
+
+      - name: 🚀 Deploy Allure Report to GitHub Pages
+        if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: peaceiris/actions-gh-pages@v3
+        env:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./test/allure-report
+          publish_branch: gh-pages
+          destination_dir: ./
+
+      - name: 📢 Report Allure Report URL
+        if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        run: |
+          echo "📊 Allure Report deployed to GitHub Pages"
+          echo "🔗 View report at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
 
