@@ -1,0 +1,8 @@
+{
+  "method": "POST",
+  "endpoint": "/todos",
+  "data": {
+    "title": "Buy groceries",
+    "description": "Milk, eggs, bread, butter"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "method": "POST",
+  "endpoint": "/todos",
+  "data": {
+    "title": "Claustrum auxilium dedecor arma theca vereor.",
+    "description": "Spoliatio aegrus aer sopor aggredior admiratio. Asporto aestus eligendi. Asporto deludo porro ultra trepide sequi vinitor aspicio.",
+    "completed": false
+  }
+}

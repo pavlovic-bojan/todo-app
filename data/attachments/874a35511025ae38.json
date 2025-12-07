@@ -1,0 +1,8 @@
+{
+  "method": "POST",
+  "endpoint": "/users/login",
+  "data": {
+    "username": "wrong",
+    "password": "wrong"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "method": "POST",
+  "endpoint": "/todos",
+  "data": {
+    "title": "Complete project",
+    "description": "Finish the Todo app implementation"
+  }
+}

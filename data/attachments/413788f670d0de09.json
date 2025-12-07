@@ -1,0 +1,8 @@
+{
+  "method": "POST",
+  "endpoint": "/users/login",
+  "data": {
+    "username": "testuser_1765126159171",
+    "password": "Test123456"
+  }
+}

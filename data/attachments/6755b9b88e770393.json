@@ -1,0 +1,7 @@
+{
+  "method": "POST",
+  "endpoint": "/todos",
+  "data": {
+    "title": "To be deleted"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "method": "GET",
+  "endpoint": "/todos?completed=true",
+  "data": null
+}

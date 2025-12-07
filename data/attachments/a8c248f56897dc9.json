@@ -1,0 +1,8 @@
+{
+  "method": "POST",
+  "endpoint": "/todos",
+  "data": {
+    "title": "Go to gym",
+    "description": "Workout session at 6 PM"
+  }
+}
