@@ -1,0 +1,5 @@
+{
+  "method": "POST",
+  "endpoint": "/users/refresh",
+  "data": null
+}

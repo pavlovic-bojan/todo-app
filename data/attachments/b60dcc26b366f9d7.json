@@ -1,0 +1,8 @@
+{
+  "method": "POST",
+  "endpoint": "/todos",
+  "data": {
+    "title": "<script>alert(\"XSS\")</script>",
+    "description": "XSS in title"
+  }
+}

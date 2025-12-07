@@ -1,0 +1,7 @@
+{
+  "method": "POST",
+  "endpoint": "/todos",
+  "data": {
+    "title": "Original Title"
+  }
+}

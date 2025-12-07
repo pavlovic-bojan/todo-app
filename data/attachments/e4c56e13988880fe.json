@@ -1,0 +1,8 @@
+{
+  "method": "POST",
+  "endpoint": "/todos",
+  "data": {
+    "title": "",
+    "description": "This should fail"
+  }
+}

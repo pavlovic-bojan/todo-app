@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "endpoint": "/users/register",
+  "data": {
+    "username": "user_1765087127501_00f7i1qwx",
+    "email": "Ernesto_Rolfson@yahoo.com",
+    "password": "D9Mxe7wF",
+    "role": "client",
+    "age": 51
+  }
+}

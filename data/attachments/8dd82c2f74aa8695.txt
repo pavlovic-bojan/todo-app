@@ -1,0 +1,39 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation "Main navigation" [ref=e4]:
+    - generic [ref=e5]:
+      - link "Todo App Home" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - text: 📋 Todo App
+      - button "Toggle navigation" [ref=e7] [cursor=pointer]
+  - generic [ref=e9]:
+    - link "Skip to main content" [ref=e10] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e14]:
+      - heading "Reset Password" [level=1] [ref=e15]
+      - alert [ref=e16]: Reset failed
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]: Reset Token *
+          - textbox "Reset Token required" [ref=e20]:
+            - /placeholder: Enter the token you received
+            - text: 8446f91ed285311e14a297ed830848e790f9b0945cd2c97caea6c619e0e256c8
+          - text: Enter the reset token from the forgot password page
+        - generic [ref=e21]:
+          - generic [ref=e22]: New Password *
+          - textbox "New Password required" [ref=e23]:
+            - /placeholder: Enter new password
+            - text: NewPassword123
+          - text: At least 6 characters with uppercase, lowercase, and number
+        - generic [ref=e24]:
+          - generic [ref=e25]: Confirm Password *
+          - textbox "Confirm Password required" [ref=e26]:
+            - /placeholder: Confirm new password
+            - text: NewPassword123
+        - button "Reset Password" [ref=e28] [cursor=pointer]
+      - separator [ref=e29]
+      - link "Back to Login" [ref=e31] [cursor=pointer]:
+        - /url: /login
+```

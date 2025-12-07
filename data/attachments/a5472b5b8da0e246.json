@@ -1,0 +1,8 @@
+{
+  "method": "POST",
+  "endpoint": "/todos",
+  "data": {
+    "title": "Active 1",
+    "completed": false
+  }
+}

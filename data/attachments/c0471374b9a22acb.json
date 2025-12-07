@@ -1,0 +1,14 @@
+{
+  "id": 11,
+  "username": "testuser_OhWmpLIZNs_1765087444316",
+  "email": "test_OhWmpLIZNs_1765087444316@test.com",
+  "hashedPassword": "$2b$12$ocpyzPrC6k9Baz6iDkUUYubCf9ixZiHAkYJA6AUzfdnuVNiX7rPWu",
+  "role": "client",
+  "age": null,
+  "hashedResetToken": null,
+  "resetTokenExpiry": null,
+  "refreshToken": null,
+  "refreshTokenExpiry": null,
+  "createdAt": "2025-12-07T06:04:04.989Z",
+  "updatedAt": "2025-12-07T06:04:04.989Z"
+}
