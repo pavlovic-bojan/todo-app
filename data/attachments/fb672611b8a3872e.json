@@ -1,9 +1,0 @@
-{
-  "method": "POST",
-  "endpoint": "/users/register",
-  "data": {
-    "username": "unique_test_user_1765098195082",
-    "email": "different_1765098195082@test.com",
-    "password": "Test123456"
-  }
-}

@@ -1,9 +1,0 @@
-{
-  "method": "POST",
-  "endpoint": "/todos",
-  "data": {
-    "title": "Sublime sed utrum atrox.",
-    "description": "Utique angulus vulnus depopulo tergum cicuta decerno. Cetera crebro caste succurro sperno vulpes vero carmen acies thalassinus. Derideo cuius eos triumphus enim textus cometes tollo venia vinum.",
-    "completed": false
-  }
-}

@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "endpoint": "/users/register",
+  "data": {
+    "username": "testuser_1765121182560",
+    "email": "test_1765121182560@example.com",
+    "password": "Test123456",
+    "role": "client",
+    "age": 25
+  }
+}

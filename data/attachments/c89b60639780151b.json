@@ -1,9 +1,0 @@
-{
-  "method": "POST",
-  "endpoint": "/todos",
-  "data": {
-    "title": "Tumultus atavus cavus.",
-    "description": "Aranea itaque conspergo in voro libero supplanto confido peccatus. Tredecim summopere decet commodi cultellus. Tondeo bene cervus bos chirographum tametsi benevolentia urbs cauda.",
-    "completed": false
-  }
-}
