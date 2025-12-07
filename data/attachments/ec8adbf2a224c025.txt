@@ -1,0 +1,36 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation "Main navigation" [ref=e4]:
+    - generic [ref=e5]:
+      - link "Todo App Home" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - text: 📋 Todo App
+      - list [ref=e8]:
+        - listitem [ref=e9]:
+          - link "Go to login page" [ref=e10] [cursor=pointer]:
+            - /url: /login
+            - text: Login
+        - listitem [ref=e11]:
+          - link "Go to registration page" [ref=e12] [cursor=pointer]:
+            - /url: /register
+            - text: Register
+  - generic [ref=e13]:
+    - link "Skip to main content" [ref=e14] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e18]:
+      - heading "Forgot Password" [level=1] [ref=e19]
+      - alert [ref=e20]: Request failed
+      - generic [ref=e21]:
+        - paragraph [ref=e22]: Enter your email address and we'll send you a password reset token.
+        - generic [ref=e23]:
+          - generic [ref=e24]: Email *
+          - textbox "Email required" [ref=e25]:
+            - /placeholder: your@email.com
+            - text: test_1765125243227@example.com
+        - button "Send Reset Token" [ref=e27] [cursor=pointer]
+      - separator [ref=e28]
+      - link "Back to Login" [ref=e30] [cursor=pointer]:
+        - /url: /login
+```
