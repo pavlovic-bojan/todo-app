@@ -1,0 +1,5 @@
+{
+  "method": "PATCH",
+  "endpoint": "/todos/739/toggle",
+  "data": null
+}

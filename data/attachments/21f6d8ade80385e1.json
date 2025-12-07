@@ -1,0 +1,39 @@
+{
+  "status": 429,
+  "data": {
+    "message": "Too many requests from this IP, please try again later"
+  },
+  "headers": {
+    "date": "Sun, 07 Dec 2025 08:37:20 GMT",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "65",
+    "connection": "close",
+    "cf-ray": "9aa2b3535e3a1e0d-IAD",
+    "access-control-allow-credentials": "true",
+    "access-control-allow-origin": "https://todo-app-frontend-seven-rho.vercel.app",
+    "content-security-policy": "default-src 'self';style-src 'self' 'unsafe-inline';script-src 'self';img-src 'self' data: https:;base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';upgrade-insecure-requests",
+    "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "etag": "W/\"44-4wwVAs3v0AOW+nGQBfi9FWj2ojw\"",
+    "origin-agent-cluster": "?1",
+    "ratelimit-limit": "100",
+    "ratelimit-policy": "100;w=900",
+    "ratelimit-remaining": "0",
+    "ratelimit-reset": "625",
+    "referrer-policy": "no-referrer",
+    "retry-after": "625",
+    "rndr-id": "2f295720-72e9-4a72",
+    "strict-transport-security": "max-age=15552000; includeSubDomains",
+    "vary": "Origin, Accept-Encoding, Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-dns-prefetch-control": "off",
+    "x-download-options": "noopen",
+    "x-frame-options": "SAMEORIGIN",
+    "x-permitted-cross-domain-policies": "none",
+    "x-render-origin-server": "Render",
+    "x-xss-protection": "0",
+    "cf-cache-status": "DYNAMIC",
+    "server": "cloudflare",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  }
+}

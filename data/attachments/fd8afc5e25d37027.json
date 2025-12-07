@@ -1,9 +1,0 @@
-{
-  "method": "POST",
-  "endpoint": "/todos",
-  "data": {
-    "title": "Calculus amicitia supellex debilito.",
-    "description": "Volup distinctio calculus cervus. Condico thema apto tollo traho tergum depraedor valetudo beneficium cotidie. Voro defaeco fugit animadverto illum confugo conitor quo pauper pectus.",
-    "completed": false
-  }
-}

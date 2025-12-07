@@ -1,0 +1,9 @@
+{
+  "method": "PATCH",
+  "endpoint": "/todos/736",
+  "data": {
+    "title": "Updated Title",
+    "description": "Updated description",
+    "completed": true
+  }
+}

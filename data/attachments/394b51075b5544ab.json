@@ -1,0 +1,9 @@
+{
+  "id": 40,
+  "title": "DB Test Todo",
+  "description": "Testing DB creation",
+  "completed": false,
+  "userId": 26,
+  "createdAt": "2025-12-07T09:03:15.294Z",
+  "updatedAt": "2025-12-07T09:03:15.294Z"
+}

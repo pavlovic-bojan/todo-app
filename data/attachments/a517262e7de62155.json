@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "endpoint": "/users/register",
+  "data": {
+    "username": "user_1765097312631_kmi9t83ic",
+    "email": "Suzanne91@hotmail.com",
+    "password": "m5Ua8vFT",
+    "role": "client",
+    "age": 63
+  }
+}

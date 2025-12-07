@@ -1,0 +1,52 @@
+{
+  "status": 201,
+  "data": {
+    "message": "Todo created successfully",
+    "todo": {
+      "id": 739,
+      "title": "Completed 1",
+      "description": null,
+      "completed": false,
+      "userId": 1493,
+      "createdAt": "2025-12-07T09:03:05.158Z",
+      "updatedAt": "2025-12-07T09:03:05.158Z",
+      "user": {
+        "id": 1493,
+        "username": "testuser_1765098152386",
+        "email": "test_1765098152386@example.com"
+      }
+    }
+  },
+  "headers": {
+    "date": "Sun, 07 Dec 2025 09:03:05 GMT",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "190",
+    "connection": "close",
+    "cf-ray": "9aa2d908b895e63d-IAD",
+    "access-control-allow-credentials": "true",
+    "access-control-allow-origin": "https://todo-app-frontend-seven-rho.vercel.app",
+    "content-security-policy": "default-src 'self';style-src 'self' 'unsafe-inline';script-src 'self';img-src 'self' data: https:;base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';upgrade-insecure-requests",
+    "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "etag": "W/\"130-nR11TN0PkhbzuQw9bnTlZunj7Zk\"",
+    "origin-agent-cluster": "?1",
+    "ratelimit-limit": "100",
+    "ratelimit-policy": "100;w=900",
+    "ratelimit-remaining": "79",
+    "ratelimit-reset": "881",
+    "referrer-policy": "no-referrer",
+    "rndr-id": "117eaf1c-b377-49dc",
+    "strict-transport-security": "max-age=15552000; includeSubDomains",
+    "vary": "Origin, Accept-Encoding, Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-dns-prefetch-control": "off",
+    "x-download-options": "noopen",
+    "x-frame-options": "SAMEORIGIN",
+    "x-permitted-cross-domain-policies": "none",
+    "x-render-origin-server": "Render",
+    "x-xss-protection": "0",
+    "cf-cache-status": "DYNAMIC",
+    "server": "cloudflare",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  }
+}
