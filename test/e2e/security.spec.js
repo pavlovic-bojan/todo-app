@@ -199,23 +199,40 @@ test.describe('Security Tests', () => {
 
     await allure.step('Attempt multiple failed logins (rate limiting)', async () => {
       for (let i = 0; i < 6; i++) {
-        // Check if input is disabled (rate limited)
-        const isDisabled = await page.locator('#username').isDisabled().catch(() => false)
+        // Check if input is disabled (rate limited) BEFORE trying to fill
+        const isDisabled = await page.locator('#username').isDisabled({ timeout: 1000 }).catch(() => false)
         if (isDisabled) {
           // If disabled, wait a bit and check error message
-          await page.waitForTimeout(1000)
+          await page.waitForTimeout(2000)
           const error = await loginPage.getErrorMessage()
-          if (error && error.includes('Too many')) {
+          if (error && (error.includes('Too many') || error.includes('rate'))) {
             await allure.parameter(`Attempt ${i + 1}`, 'Rate limited - input disabled')
             break
           }
+          // If disabled but no error yet, wait a bit more
+          await page.waitForTimeout(1000)
+          continue
         }
         
-        await loginPage.fillUsername('wronguser')
-        await loginPage.fillPassword('wrongpass')
-        await loginPage.clickLogin()
-        await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
-        await page.waitForTimeout(1000)
+        // Input is enabled, proceed with login attempt
+        try {
+          await loginPage.fillUsername('wronguser')
+          await loginPage.fillPassword('wrongpass')
+          await loginPage.clickLogin()
+          await page.waitForLoadState('networkidle', { timeout: 20000 }).catch(() => {})
+          await page.waitForTimeout(1500)
+        } catch (fillError) {
+          // If fill failed because input became disabled, check error
+          const isDisabledNow = await page.locator('#username').isDisabled({ timeout: 1000 }).catch(() => false)
+          if (isDisabledNow) {
+            await page.waitForTimeout(2000)
+            const error = await loginPage.getErrorMessage()
+            if (error && (error.includes('Too many') || error.includes('rate'))) {
+              await allure.parameter(`Attempt ${i + 1}`, 'Rate limited during attempt')
+              break
+            }
+          }
+        }
         await allure.parameter(`Attempt ${i + 1}`, 'Failed login')
       }
     })

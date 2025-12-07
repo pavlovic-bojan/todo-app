@@ -2,6 +2,8 @@
 
 **Complete testing solution for Todo App** - UI (POM), API (Schema Validation), Database, Contract (Pact), Performance (Artillery), and Comprehensive Allure Reports.
 
+> 📚 **Main Documentation:** See [Main README](../README.md) for project overview and quick start guide.
+
 ---
 
 ## 📚 Table of Contents
@@ -376,6 +378,38 @@ npm run report          # Generate and open report
 npm run report:generate # Generate only
 npm run report:open     # Open existing report
 npm run report:serve    # Serve on localhost
+```
+
+### View Online Report
+
+The latest Allure report is automatically deployed to GitHub Pages:
+- **Live Report:** [View Online](https://pavlovic-bojan.github.io/todo-app/)
+
+### Running Allure Locally
+
+**1. Generate report after tests:**
+```bash
+# Run tests first (generates allure-results/)
+npm test
+
+# Generate HTML report
+npm run report:generate
+
+# Open report in browser
+npm run report:open
+```
+
+**2. Serve report on localhost:**
+```bash
+# Start local server (default: http://localhost:9323)
+npm run report:serve
+```
+
+**3. View report history:**
+```bash
+# History is preserved in allure-report/history/
+# Reports show trends over multiple test runs
+npm run report
 ```
 
 ### Report Structure

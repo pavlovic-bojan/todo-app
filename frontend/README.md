@@ -2,6 +2,8 @@
 
 Vue 3 + Vite + Bootstrap 5 frontend with modern best practices and comprehensive testing.
 
+> 📚 **Main Documentation:** See [Main README](../README.md) for project overview and quick start guide.
+
 ---
 
 ## ✨ Features

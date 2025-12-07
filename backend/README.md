@@ -2,6 +2,8 @@
 
 Node.js + Express + Prisma ORM + SQLite backend with comprehensive authentication and testing.
 
+> 📚 **Main Documentation:** See [Main README](../README.md) for project overview and quick start guide.
+
 ---
 
 ## ✨ Features

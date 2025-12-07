@@ -41,8 +41,8 @@ class DashboardPage extends BasePage {
     this.activeTodosCard = 'text=Active'
     this.completedTodosCard = 'text=Completed'
     
-    // User info
-    this.userInfo = 'strong'
+    // User info - use more specific selector for sidebar
+    this.userInfo = 'nav[aria-label="User information sidebar"] strong'
   }
 
   /**
@@ -98,6 +98,15 @@ class DashboardPage extends BasePage {
    * Click new todo button
    */
   async clickNewTodo() {
+    // Check if modal is already open - if so, close it first
+    const modalVisible = await this.page.locator(this.modal).isVisible({ timeout: 1000 }).catch(() => false)
+    if (modalVisible) {
+      // Close existing modal by clicking backdrop or close button
+      await this.page.keyboard.press('Escape')
+      await this.page.waitForSelector(this.modal, { state: 'hidden', timeout: 3000 }).catch(() => {})
+      await this.page.waitForTimeout(300)
+    }
+    
     await this.click(this.newTodoButton)
     // Wait for modal to appear with retry
     await this.page.waitForSelector(this.modal, { state: 'visible', timeout: 10000 }).catch(async () => {
@@ -105,6 +114,8 @@ class DashboardPage extends BasePage {
       await this.page.waitForTimeout(500)
       await this.waitForElement(this.modal, 10000)
     })
+    // Small delay for modal animation
+    await this.page.waitForTimeout(300)
   }
 
   /**
@@ -122,11 +133,13 @@ class DashboardPage extends BasePage {
    */
   async submitTodoForm() {
     await this.click(this.modalSubmitButton)
-    // Wait for modal to close or network to be idle
+    // Wait a bit for form submission and validation
+    await this.page.waitForTimeout(500)
+    // Wait for modal to close (if valid) or stay open (if validation error)
     try {
-      await this.page.waitForSelector(this.modal, { state: 'hidden', timeout: 5000 })
+      await this.page.waitForSelector(this.modal, { state: 'hidden', timeout: 3000 })
     } catch (error) {
-      // If modal still visible, wait for network idle
+      // Modal still visible - could be validation error, wait for network
       await this.page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {})
     }
   }
@@ -138,7 +151,9 @@ class DashboardPage extends BasePage {
     await this.clickNewTodo()
     await this.fillTodoForm(title, description)
     await this.submitTodoForm()
-    await this.page.waitForLoadState('networkidle')
+    // Wait for network and UI update
+    await this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {})
+    await this.page.waitForTimeout(500)
   }
 
   /**
@@ -267,13 +282,17 @@ class DashboardPage extends BasePage {
    * Assert user is logged in
    */
   async assertLoggedIn(username) {
-    // User info is in sidebar, wait for it
-    await this.page.waitForSelector(this.userInfo, { state: 'visible', timeout: 10000 })
-    await this.assertVisible(this.userInfo)
+    // User info is in sidebar, wait for it - use specific sidebar selector
+    const sidebarSelector = 'nav[aria-label="User information sidebar"]'
+    await this.page.waitForSelector(sidebarSelector, { state: 'visible', timeout: 10000 })
+    
     if (username) {
-      // Check if username appears in the page - use more specific selector for sidebar
-      const usernameLocator = this.page.locator(`nav strong:has-text("${username}")`).first()
+      // Use specific selector for username in sidebar (avoids strict mode violation)
+      const usernameLocator = this.page.locator(`${sidebarSelector} strong:has-text("${username}")`)
       await expect(usernameLocator).toBeVisible({ timeout: 10000 })
+    } else {
+      // Just verify sidebar is visible
+      await this.assertVisible(sidebarSelector)
     }
   }
 

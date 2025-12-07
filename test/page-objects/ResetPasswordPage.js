@@ -47,6 +47,8 @@ class ResetPasswordPage extends BasePage {
   }
 
   async assertSuccessMessageVisible() {
+    // Wait a bit for Vue reactivity
+    await this.page.waitForTimeout(500)
     await this.assertVisible(this.successAlert)
   }
 

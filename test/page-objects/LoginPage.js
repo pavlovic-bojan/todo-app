@@ -55,15 +55,25 @@ class LoginPage extends BasePage {
     await this.fillUsername(username)
     await this.fillPassword(password)
     await this.clickLogin()
-    // Wait for network to be idle first
-    await this.page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
-    // Wait for navigation to dashboard or error message
-    try {
-      await this.page.waitForURL(/\/dashboard/, { timeout: 20000 })
-    } catch (error) {
-      // If navigation didn't happen, check for error
-      await this.page.waitForTimeout(1000)
+    
+    // Wait for network request to complete
+    await this.page.waitForLoadState('networkidle', { timeout: 20000 }).catch(() => {})
+    
+    // Check if we're still on login page (error) or navigated to dashboard (success)
+    const currentUrl = this.page.url()
+    const isOnLoginPage = currentUrl.includes('/login')
+    const isOnDashboard = currentUrl.includes('/dashboard')
+    
+    if (isOnDashboard) {
+      // Success - already navigated
+      return
+    }
+    
+    if (isOnLoginPage) {
+      // Still on login page - check for error
+      await this.page.waitForTimeout(1500) // Wait for error message to render
       const errorMsg = await this.getErrorMessage()
+      
       if (errorMsg) {
         // If rate limited, wait and retry once
         if (errorMsg.includes('Too many') || errorMsg.includes('rate')) {
@@ -71,15 +81,22 @@ class LoginPage extends BasePage {
           await this.fillUsername(username)
           await this.fillPassword(password)
           await this.clickLogin()
-          await this.page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
+          await this.page.waitForLoadState('networkidle', { timeout: 20000 }).catch(() => {})
           await this.page.waitForURL(/\/dashboard/, { timeout: 20000 })
         } else {
           throw new Error(`Login failed: ${errorMsg}`)
         }
       } else {
-        // If no error and no navigation, wait a bit more
-        await this.page.waitForURL(/\/dashboard/, { timeout: 15000 })
+        // No error message but still on login - wait a bit more for navigation
+        try {
+          await this.page.waitForURL(/\/dashboard/, { timeout: 10000 })
+        } catch (e) {
+          throw new Error('Login failed: No navigation and no error message')
+        }
       }
+    } else {
+      // Unknown state - wait for navigation
+      await this.page.waitForURL(/\/dashboard/, { timeout: 20000 })
     }
   }
 

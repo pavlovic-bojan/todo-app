@@ -2,6 +2,8 @@
 
 This folder contains performance test scenarios using Artillery.
 
+> 📚 **Main Documentation:** See [Main README](../../README.md) for project overview and [Test README](../README.md) for complete testing guide.
+
 ## 📊 Test Types
 
 ### 1. Load Test (`load-test.yml`)

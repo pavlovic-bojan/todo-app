@@ -29,6 +29,11 @@ class BasePage {
    * Fill input field
    */
   async fill(selector, value) {
+    // Check if element is disabled first
+    const isDisabled = await this.page.locator(selector).isDisabled({ timeout: 1000 }).catch(() => false)
+    if (isDisabled) {
+      throw new Error(`Cannot fill ${selector}: element is disabled`)
+    }
     await this.page.fill(selector, value)
   }
 

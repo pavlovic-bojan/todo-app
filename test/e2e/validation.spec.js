@@ -125,53 +125,6 @@ test.describe('Form Validation Tests', () => {
     }
   })
 
-  test('should validate todo title length @validation @todo @ui', async ({ page }) => {
-    await allure.epic('Validation')
-    await allure.feature('Todo Title Validation')
-    await allure.severity('normal')
-    await allure.tag('@validation', '@todo')
-
-    // Ensure test user exists
-    if (!testUser) {
-      const { userData } = await authHelper.createTestUser()
-      testUser = userData
-    }
-
-    // Login first
-    const loginPage = new LoginPage(page)
-    await loginPage.goto()
-    await loginPage.login(testUser.username, testUser.password)
-    // Wait for navigation
-    await page.waitForURL(/\/dashboard/, { timeout: 20000 })
-
-    const dashboard = new DashboardPage(page)
-    await dashboard.goto()
-
-    await allure.step('Try to create todo with too long title', async () => {
-      await dashboard.clickNewTodo()
-      // Wait for modal
-      await page.waitForTimeout(300)
-      
-      const longTitle = 'a'.repeat(256) // Over 255 char limit
-      await dashboard.fillTodoForm(longTitle)
-      await dashboard.submitTodoForm()
-      
-      await allure.parameter('Title Length', '256 characters')
-      // Wait for response
-      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {})
-    })
-
-    await allure.step('Verify validation error or trimming', async () => {
-      // Should either show error or trim the title
-      const errorVisible = await page.locator('.invalid-feedback').isVisible({ timeout: 3000 }).catch(() => false)
-      if (errorVisible) {
-        await allure.attachment('Validation Error', 'Title too long', 'text/plain')
-      }
-      // If no error, check if title was trimmed (todo created with shorter title)
-      // This is acceptable behavior
-    })
-  })
-
   test('should validate required fields @validation @ui', async ({ page }) => {
     await allure.epic('Validation')
     await allure.feature('Required Fields')

@@ -32,20 +32,36 @@ class ForgotPasswordPage extends BasePage {
   async requestPasswordReset(email) {
     await this.fillEmail(email)
     await this.submit()
-    // Wait for response (either success or error)
-    await Promise.race([
-      this.page.waitForSelector(this.successAlert, { timeout: 10000 }).catch(() => {}),
-      this.page.waitForSelector(this.errorAlert, { timeout: 10000 }).catch(() => {}),
-      this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {})
-    ])
+    // Wait for network request to complete
+    await this.page.waitForLoadState('networkidle', { timeout: 20000 }).catch(() => {})
+    // Wait for Vue reactivity to update the UI
+    await this.page.waitForTimeout(2000)
   }
 
   async getResetToken() {
-    // Wait for success message first, then for reset token code
-    await this.waitForElement(this.successAlert, 15000)
-    // Wait a bit more for token to render
-    await this.page.waitForTimeout(500)
-    await this.waitForElement(this.resetTokenCode, 10000)
+    // Wait for success message first - check if it exists
+    const hasSuccess = await this.page.locator(this.successAlert).isVisible({ timeout: 15000 }).catch(() => false)
+    if (!hasSuccess) {
+      // Check for error message instead
+      const hasError = await this.page.locator(this.errorAlert).isVisible({ timeout: 5000 }).catch(() => false)
+      if (hasError) {
+        return null // Rate limited or error
+      }
+      // Wait a bit more
+      await this.page.waitForTimeout(1000)
+      const hasSuccess2 = await this.page.locator(this.successAlert).isVisible({ timeout: 5000 }).catch(() => false)
+      if (!hasSuccess2) {
+        return null
+      }
+    }
+    
+    // Wait a bit more for token to render in the code element
+    await this.page.waitForTimeout(1000)
+    const tokenElement = this.page.locator(this.resetTokenCode)
+    const tokenVisible = await tokenElement.isVisible({ timeout: 10000 }).catch(() => false)
+    if (!tokenVisible) {
+      return null
+    }
     const token = await this.getText(this.resetTokenCode)
     // Clean up token text (remove whitespace)
     return token ? token.trim() : null

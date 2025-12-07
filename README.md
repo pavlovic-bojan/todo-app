@@ -130,23 +130,22 @@ npm test                 # All UI tests
 npm run test:api         # API tests
 npm run test:db          # Database tests
 npm run test:performance # Performance tests
-npm run report           # Generate Allure report
+# See test/README.md for Allure report generation
 ```
 
 ---
 
 ## 📚 Documentation
 
-### Main Guides
-- **[Backend README](backend/README.md)** - Backend API documentation
-- **[Frontend README](frontend/README.md)** - Frontend documentation
-- **[Test README](test/README.md)** - QA Framework guide
-- **[Test Quick Start](test/QUICK_START.md)** - 5-minute testing guide
+### Main Documentation
+- **[Backend README](backend/README.md)** - Complete backend API documentation, setup guide, and testing instructions
+- **[Frontend README](frontend/README.md)** - Frontend development guide, components, and best practices
+- **[Test README](test/README.md)** - Enterprise QA Testing Framework guide with Allure reports
+- **[Performance Testing README](test/performance/README.md)** - Performance testing scenarios and metrics
 
-### Additional Resources
-- **[Backend ENV Setup](backend/ENV_SETUP.md)** - Environment configuration
-- **[Test Setup Guide](test/SETUP_GUIDE.md)** - Detailed testing setup
-- **[CI/CD Integration](test/CI_CD_INTEGRATION.md)** - CI/CD pipeline setup
+### Quick Links
+- **Backend API Docs:** https://todo-app-xhn2.onrender.com/api/docs/
+- **Latest Allure Report:** [View Online](https://pavlovic-bojan.github.io/todo-app/)
 
 ---
 
