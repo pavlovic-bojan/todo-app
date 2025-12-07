@@ -159,7 +159,7 @@ test.describe('Security Tests', () => {
     })
   })
 
-  test('should protect against CSRF @security @api', async ({ page }) => {
+  test('should protect against CSRF @security @ui @api', async ({ page }) => {
     await allure.epic('Security')
     await allure.feature('CSRF Protection')
     await allure.severity('critical')

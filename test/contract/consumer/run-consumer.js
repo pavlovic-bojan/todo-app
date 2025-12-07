@@ -22,11 +22,11 @@ async function runTests() {
     
     let command
     if (useLocalMocha) {
-      // Use local mocha
-      command = `"${mochaPath}" "${testFile}" --timeout 10000`
+      // Use local mocha with Allure reporter
+      command = `"${mochaPath}" "${testFile}" --timeout 10000 --reporter allure-mocha`
     } else {
-      // Fallback to npx with proper quoting
-      command = `npx --yes -- mocha "${testFile}" --timeout 10000`
+      // Fallback to npx with proper quoting and Allure reporter
+      command = `npx --yes -- mocha "${testFile}" --timeout 10000 --reporter allure-mocha`
     }
     const { stdout, stderr } = await execAsync(command, {
       cwd: testDir,

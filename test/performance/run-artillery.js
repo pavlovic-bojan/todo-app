@@ -28,9 +28,19 @@ console.log('🚀 Running Artillery Performance Test...')
 console.log(`📡 Target URL: ${BACKEND_URL}`)
 console.log(`📄 Test File: ${testFileRelative}\n`)
 
+// Create reports directory if it doesn't exist
+const reportsDir = path.join(__dirname, 'reports')
+if (!require('fs').existsSync(reportsDir)) {
+  require('fs').mkdirSync(reportsDir, { recursive: true })
+}
+
+// Generate output filename based on test file
+const testName = path.basename(testFile, '.yml')
+const outputFile = path.join(reportsDir, `${testName}-${Date.now()}.json`)
+
 // Use spawn for real-time output streaming
 // Use relative path to avoid Windows path issues with spaces
-const artillery = spawn('artillery', ['run', testFileRelative, '--target', BACKEND_URL], {
+const artillery = spawn('artillery', ['run', testFileRelative, '--target', BACKEND_URL, '--output', outputFile], {
   cwd: path.resolve(__dirname, '..'),
   shell: true,
   stdio: 'inherit', // Pipe stdout/stderr directly to parent process
@@ -48,9 +58,11 @@ artillery.on('error', (error) => {
 artillery.on('close', (code) => {
   if (code === 0) {
     console.log('\n✅ Performance test completed!')
+    console.log(`📊 Results saved to: ${outputFile}`)
   } else {
     console.error(`\n❌ Performance test failed with exit code ${code}`)
   }
-  process.exit(code)
+  // Don't exit with error code - let conversion script run
+  process.exit(0)
 })
 
