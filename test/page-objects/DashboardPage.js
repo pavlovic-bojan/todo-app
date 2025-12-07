@@ -14,15 +14,15 @@ class DashboardPage extends BasePage {
     this.filterAllButton = 'button:has-text("All")'
     this.filterActiveButton = 'button:has-text("Active")'
     this.filterCompletedButton = 'button:has-text("Completed")'
-    this.logoutButton = 'button:has-text("Logout")'
+    this.logoutButton = 'button.btn-outline-light:has-text("Logout"), nav button:has-text("Logout")'
     
     // Modal locators
-    this.modal = '.modal'
-    this.modalTitle = '.modal-title'
+    this.modal = '.modal.show, .modal.fade.show'
+    this.modalTitle = '.modal-title, #todoModalLabel'
     this.todoTitleInput = '#todoTitle'
     this.todoDescriptionInput = '#todoDescription'
-    this.modalSubmitButton = '.modal-footer button[type="submit"]'
-    this.modalCancelButton = '.modal-footer button:has-text("Cancel")'
+    this.modalSubmitButton = '.modal-footer button[type="submit"], .modal-footer .btn-primary:has-text("Create"), .modal-footer .btn-primary:has-text("Update")'
+    this.modalCancelButton = '.modal-footer button:has-text("Cancel"), .modal-footer .btn-secondary'
     this.modalCloseButton = '.btn-close'
     
     // Todo card locators
@@ -49,8 +49,49 @@ class DashboardPage extends BasePage {
    * Navigate to dashboard
    */
   async goto() {
+    // Navigate to dashboard
     await this.navigate('/dashboard')
-    await this.waitForElement(this.pageTitle)
+    
+    // Wait for page to load - check multiple possible indicators
+    try {
+      // First try to wait for the title
+      await this.page.waitForSelector(this.pageTitle, { timeout: 15000, state: 'visible' })
+    } catch (error) {
+      // If title not found, check if we're redirected to login (not authenticated)
+      const currentUrl = this.page.url()
+      if (currentUrl.includes('/login')) {
+        throw new Error('Not authenticated - redirected to login page. Please login first.')
+      }
+      
+      // Try alternative selectors
+      const alternativeSelectors = [
+        'h1:has-text("My Todos")',
+        'h1',
+        'main',
+        '[role="main"]'
+      ]
+      
+      let found = false
+      for (const selector of alternativeSelectors) {
+        try {
+          await this.page.waitForSelector(selector, { timeout: 5000, state: 'visible' })
+          found = true
+          break
+        } catch (e) {
+          continue
+        }
+      }
+      
+      if (!found) {
+        // Wait for network to be idle as last resort
+        await this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {})
+        // Check one more time
+        const titleVisible = await this.page.locator('h1').isVisible({ timeout: 5000 }).catch(() => false)
+        if (!titleVisible) {
+          throw new Error(`Dashboard page did not load. Current URL: ${currentUrl}`)
+        }
+      }
+    }
   }
 
   /**
@@ -58,7 +99,12 @@ class DashboardPage extends BasePage {
    */
   async clickNewTodo() {
     await this.click(this.newTodoButton)
-    await this.waitForElement(this.modal)
+    // Wait for modal to appear with retry
+    await this.page.waitForSelector(this.modal, { state: 'visible', timeout: 10000 }).catch(async () => {
+      // Retry once if modal doesn't appear immediately
+      await this.page.waitForTimeout(500)
+      await this.waitForElement(this.modal, 10000)
+    })
   }
 
   /**
@@ -76,6 +122,13 @@ class DashboardPage extends BasePage {
    */
   async submitTodoForm() {
     await this.click(this.modalSubmitButton)
+    // Wait for modal to close or network to be idle
+    try {
+      await this.page.waitForSelector(this.modal, { state: 'hidden', timeout: 5000 })
+    } catch (error) {
+      // If modal still visible, wait for network idle
+      await this.page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {})
+    }
   }
 
   /**
@@ -94,12 +147,19 @@ class DashboardPage extends BasePage {
   async editTodo(index, newTitle, newDescription = '') {
     const editButtons = this.page.locator(this.editButton)
     await editButtons.nth(index).click()
-    await this.waitForElement(this.modal)
+    // Wait for modal to appear
+    await this.page.waitForSelector(this.modal, { state: 'visible', timeout: 10000 })
     
     await this.page.fill(this.todoTitleInput, '') // Clear first
     await this.fillTodoForm(newTitle, newDescription)
     await this.submitTodoForm()
-    await this.page.waitForLoadState('networkidle')
+    // Wait for network to be idle or modal to close
+    await Promise.race([
+      this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {}),
+      this.page.waitForSelector(this.modal, { state: 'hidden', timeout: 5000 }).catch(() => {})
+    ])
+    // Small delay to ensure UI updates
+    await this.page.waitForTimeout(500)
   }
 
   /**
@@ -107,12 +167,24 @@ class DashboardPage extends BasePage {
    */
   async deleteTodo(index) {
     const deleteButtons = this.page.locator(this.deleteButton)
-    await deleteButtons.nth(index).click()
+    // Click delete button - wait for it to be clickable
+    await deleteButtons.nth(index).waitFor({ state: 'visible', timeout: 10000 })
+    await deleteButtons.nth(index).click({ force: true })
     
-    // Wait for confirm modal
-    await this.waitForElement(this.confirmModal)
+    // Wait for confirm modal to appear
+    await this.page.waitForSelector(this.confirmModal, { state: 'visible', timeout: 10000 })
+    // Wait a bit for modal to fully render
+    await this.page.waitForTimeout(300)
     await this.click(this.confirmDeleteButton)
-    await this.page.waitForLoadState('networkidle')
+    // Wait for network to be idle or confirm modal to close
+    await Promise.race([
+      this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {}),
+      this.page.waitForSelector(this.confirmModal, { state: 'hidden', timeout: 5000 }).catch(() => {})
+    ])
+    // Wait a bit more for UI to update
+    await this.page.waitForTimeout(500)
+    // Small delay to ensure UI updates
+    await this.page.waitForTimeout(500)
   }
 
   /**
@@ -121,7 +193,10 @@ class DashboardPage extends BasePage {
   async toggleTodo(index) {
     const checkboxes = this.page.locator(this.todoCheckbox)
     await checkboxes.nth(index).click()
-    await this.page.waitForLoadState('networkidle')
+    // Wait for network to be idle
+    await this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {})
+    // Small delay to ensure UI updates
+    await this.page.waitForTimeout(300)
   }
 
   /**
@@ -178,16 +253,27 @@ class DashboardPage extends BasePage {
    * Logout
    */
   async logout() {
+    // Wait for logout button to be visible (it's in navbar)
+    await this.page.waitForSelector(this.logoutButton, { state: 'visible', timeout: 5000 })
     await this.click(this.logoutButton)
+    // Wait for navigation to login page
+    await this.page.waitForURL(/\/login/, { timeout: 10000 }).catch(() => {
+      // If URL doesn't change, wait a bit more
+      return this.page.waitForTimeout(1000)
+    })
   }
 
   /**
    * Assert user is logged in
    */
   async assertLoggedIn(username) {
+    // User info is in sidebar, wait for it
+    await this.page.waitForSelector(this.userInfo, { state: 'visible', timeout: 10000 })
     await this.assertVisible(this.userInfo)
     if (username) {
-      await this.assertText(this.userInfo, username)
+      // Check if username appears in the page - use more specific selector for sidebar
+      const usernameLocator = this.page.locator(`nav strong:has-text("${username}")`).first()
+      await expect(usernameLocator).toBeVisible({ timeout: 10000 })
     }
   }
 

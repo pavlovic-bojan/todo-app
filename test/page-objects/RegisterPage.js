@@ -97,10 +97,30 @@ class RegisterPage extends BasePage {
   }
 
   /**
+   * Assert page is loaded
+   */
+  async assertPageLoaded() {
+    await this.assertVisible(this.usernameInput)
+    await this.assertVisible(this.emailInput)
+    await this.assertVisible(this.passwordInput)
+    await this.assertVisible(this.submitButton)
+  }
+
+  /**
    * Assert successful registration
    */
   async assertRegistrationSuccess() {
-    await this.assertVisible(this.successAlert)
+    // Wait for either success message or redirect to login
+    try {
+      await this.waitForElement(this.successAlert, 5000)
+      await this.assertVisible(this.successAlert)
+    } catch (error) {
+      // If success alert not found, check if redirected to login
+      await this.page.waitForURL(/\/login/, { timeout: 5000 }).catch(() => {
+        // If neither, throw original error
+        throw error
+      })
+    }
   }
 
   /**

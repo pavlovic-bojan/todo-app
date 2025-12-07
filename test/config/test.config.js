@@ -26,7 +26,9 @@ module.exports = {
     long: 30000,
     veryLong: 60000,
     default: 30000,
-    modal: 5000
+    modal: 5000,
+    navigation: 20000, // For page navigation
+    element: 15000 // For element visibility
   },
 
   // Test user credentials

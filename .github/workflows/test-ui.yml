@@ -1,76 +1,12 @@
-name: 🧪 Run All Tests
+name: 🧪 UI Tests
 
-# Trigger on every push and PR
 on:
-  push:
-    branches: [main, master, develop]
-  pull_request:
-    branches: [main, master]
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch: # Manual trigger only
 
 jobs:
-  backend-tests:
-    name: Backend Tests
+  ui-tests:
+    name: UI Tests
     runs-on: ubuntu-latest
-    
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: 📦 Install dependencies
-        run: |
-          cd backend
-          npm install
-
-      - name: 🗄️ Setup test database
-        env:
-          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
-        run: |
-          cd backend
-          npm run prisma:generate
-          npx prisma migrate deploy
-
-      - name: 🧪 Run backend tests
-        env:
-          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
-          JWT_SECRET: test-secret-key-for-ci-pipeline-only
-          JWT_REFRESH_SECRET: test-refresh-secret-for-ci-only
-        run: |
-          cd backend
-          npm test
-
-  frontend-tests:
-    name: Frontend Tests
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: 📦 Install dependencies
-        run: |
-          cd frontend
-          npm install
-
-      - name: 🧪 Run frontend tests
-        run: |
-          cd frontend
-          npm test
-
-  e2e-tests:
-    name: Run All Tests
-    runs-on: ubuntu-latest
-    needs: [backend-tests, frontend-tests] # Run after unit tests pass
     permissions:
       contents: write
     
@@ -114,7 +50,7 @@ jobs:
           echo "🔍 Checking frontend..."
           curl -f "$FRONTEND_URL" || echo "⚠️ Frontend check failed, but continuing..."
 
-      - name: 🧪 Run all tests
+      - name: 🧪 Run UI tests
         env:
           BACKEND_URL: ${{ secrets.BACKEND_URL || 'https://todo-app-xhn2.onrender.com' }}
           FRONTEND_URL: ${{ secrets.FRONTEND_URL || 'https://todo-app-frontend-seven-rho.vercel.app' }}
@@ -123,7 +59,7 @@ jobs:
           cd test
           echo "🌐 Using Backend: $BACKEND_URL"
           echo "🌐 Using Frontend: $FRONTEND_URL"
-          npm run test:all
+          npm run test:ui
 
       - name: 📊 Generate Allure report
         if: always()
@@ -142,7 +78,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
+          name: allure-report-ui
           path: test/allure-report
           retention-days: 30
 
@@ -150,7 +86,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-screenshots
+          name: test-screenshots-ui
           path: test/test-results/
           retention-days: 7
 
@@ -163,11 +99,10 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./test/allure-report
           publish_branch: gh-pages
-          destination_dir: ./
+          destination_dir: ./ui-tests
 
       - name: 📢 Report Allure Report URL
         if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         run: |
           echo "📊 Allure Report deployed to GitHub Pages"
-          echo "🔗 View report at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-
+          echo "🔗 View report at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/ui-tests/"

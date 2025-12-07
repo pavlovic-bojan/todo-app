@@ -28,17 +28,56 @@ test.describe('Todo Management', () => {
   test.beforeEach(async ({ page }) => {
     await allure.epic('Todo Management')
     
-    // Ensure test user exists
+    // Ensure test user exists with retry
     if (!testUser) {
-      const { userData } = await authHelper.createTestUser()
-      testUser = userData
+      let attempts = 0
+      while (attempts < 3 && !testUser) {
+        try {
+          const result = await authHelper.createTestUser()
+          if (result && result.userData) {
+            testUser = result.userData
+            // Small delay to avoid rate limiting
+            await page.waitForTimeout(1000)
+            break
+          }
+        } catch (error) {
+          attempts++
+          if (attempts < 3) {
+            await page.waitForTimeout(2000)
+          } else {
+            throw new Error(`Failed to create test user after 3 attempts: ${error.message}`)
+          }
+        }
+      }
     }
     
-    // Login before each test
+    // Login before each test with retry
     const loginPage = new LoginPage(page)
     await loginPage.goto()
-    await loginPage.login(testUser.username, testUser.password)
     
+    let loginSuccess = false
+    for (let attempt = 0; attempt < 3 && !loginSuccess; attempt++) {
+      try {
+        await loginPage.login(testUser.username, testUser.password)
+        // Verify we're on dashboard
+        await page.waitForURL(/\/dashboard/, { timeout: 15000 })
+        loginSuccess = true
+      } catch (error) {
+        if (attempt < 2) {
+          // Wait before retry
+          await page.waitForTimeout(2000)
+          // Check if we need to go back to login page
+          const currentUrl = page.url()
+          if (!currentUrl.includes('/login')) {
+            await loginPage.goto()
+          }
+        } else {
+          throw new Error(`Failed to login after 3 attempts: ${error.message}`)
+        }
+      }
+    }
+    
+    // Navigate to dashboard
     dashboard = new DashboardPage(page)
     await dashboard.goto()
   })
@@ -56,6 +95,8 @@ test.describe('Todo Management', () => {
 
     await allure.step('Click new todo button', async () => {
       await dashboard.clickNewTodo()
+      // Wait a bit for modal to fully render
+      await page.waitForTimeout(300)
       await dashboard.assertModalVisible('Create New Todo')
     })
 
@@ -70,7 +111,8 @@ test.describe('Todo Management', () => {
     })
 
     await allure.step('Verify todo appears in list', async () => {
-      await expect(page.locator(`text=${todoData.title}`)).toBeVisible()
+      // Wait for todo to appear with retry
+      await expect(page.locator(`text=${todoData.title}`).first()).toBeVisible({ timeout: 10000 })
     })
   })
 
@@ -86,10 +128,13 @@ test.describe('Todo Management', () => {
 
     await allure.step('Try to submit without title', async () => {
       await dashboard.submitTodoForm()
+      // Wait for validation to trigger
+      await page.waitForTimeout(500)
     })
 
     await allure.step('Verify validation error appears', async () => {
-      await expect(page.locator('.invalid-feedback')).toBeVisible()
+      // Wait for validation error with longer timeout
+      await expect(page.locator('.invalid-feedback').first()).toBeVisible({ timeout: 10000 })
     })
   })
 
@@ -102,6 +147,8 @@ test.describe('Todo Management', () => {
     // First create a todo
     await allure.step('Create initial todo', async () => {
       await dashboard.createTodo('Original Title', 'Original Description')
+      // Wait for todo to appear in list
+      await expect(page.locator('text=Original Title').first()).toBeVisible({ timeout: 10000 })
     })
 
     const newData = {
@@ -110,12 +157,15 @@ test.describe('Todo Management', () => {
     }
 
     await allure.step('Edit the todo', async () => {
+      // Wait a bit before editing
+      await page.waitForTimeout(500)
       await dashboard.editTodo(0, newData.title, newData.description)
       await allure.parameter('New Title', newData.title)
     })
 
     await allure.step('Verify updated title appears', async () => {
-      await expect(page.locator(`text=${newData.title}`)).toBeVisible()
+      // Wait for updated title to appear
+      await expect(page.locator(`text=${newData.title}`).first()).toBeVisible({ timeout: 10000 })
     })
   })
 
@@ -127,8 +177,12 @@ test.describe('Todo Management', () => {
 
     await allure.step('Create a todo to delete', async () => {
       await dashboard.createTodo('Todo to Delete', 'Will be deleted')
+      // Wait for todo to appear
+      await expect(page.locator('text=Todo to Delete').first()).toBeVisible({ timeout: 10000 })
     })
 
+    // Wait a bit before counting
+    await page.waitForTimeout(500)
     const initialCount = await dashboard.getTodoCount()
 
     await allure.step('Click delete button', async () => {
@@ -136,10 +190,13 @@ test.describe('Todo Management', () => {
     })
 
     await allure.step('Verify todo count decreased', async () => {
-      await page.waitForLoadState('networkidle')
+      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {})
+      // Wait a bit more for UI to update
+      await page.waitForTimeout(500)
       const newCount = await dashboard.getTodoCount()
       await allure.parameter('Initial Count', initialCount.toString())
       await allure.parameter('New Count', newCount.toString())
+      expect(newCount).toBeLessThan(initialCount)
     })
   })
 
@@ -153,8 +210,9 @@ test.describe('Todo Management', () => {
       await dashboard.createTodo('Toggle Test', 'Test toggle functionality')
     })
 
+    let initialState
     await allure.step('Get initial completion state', async () => {
-      const initialState = await dashboard.isTodoCompleted(0)
+      initialState = await dashboard.isTodoCompleted(0)
       await allure.parameter('Initial State', initialState ? 'Completed' : 'Not Completed')
     })
 
@@ -163,9 +221,12 @@ test.describe('Todo Management', () => {
     })
 
     await allure.step('Verify state changed', async () => {
-      await page.waitForLoadState('networkidle')
+      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {})
+      // Wait a bit more for UI to update
+      await page.waitForTimeout(500)
       const newState = await dashboard.isTodoCompleted(0)
       await allure.parameter('New State', newState ? 'Completed' : 'Not Completed')
+      expect(newState).not.toBe(initialState)
     })
   })
 
@@ -177,24 +238,31 @@ test.describe('Todo Management', () => {
 
     await allure.step('Create completed and active todos', async () => {
       await dashboard.createTodo('Active Todo 1')
+      await page.waitForTimeout(500)
       await dashboard.createTodo('Active Todo 2')
+      await page.waitForTimeout(500)
       await dashboard.createTodo('Completed Todo')
+      await page.waitForTimeout(500)
       await dashboard.toggleTodo(2) // Mark third as completed
+      await page.waitForTimeout(500)
     })
 
     await allure.step('Filter by Active', async () => {
       await dashboard.filterTodos('active')
-      await page.waitForLoadState('domcontentloaded')
+      await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {})
+      await page.waitForTimeout(300)
     })
 
     await allure.step('Filter by Completed', async () => {
       await dashboard.filterTodos('completed')
-      await page.waitForLoadState('domcontentloaded')
+      await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {})
+      await page.waitForTimeout(300)
     })
 
     await allure.step('Filter by All', async () => {
       await dashboard.filterTodos('all')
-      await page.waitForLoadState('domcontentloaded')
+      await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {})
+      await page.waitForTimeout(300)
     })
   })
 
@@ -206,7 +274,8 @@ test.describe('Todo Management', () => {
 
     await allure.step('Verify statistics cards are visible', async () => {
       await expect(page.locator('text=Total Todos')).toBeVisible()
-      await expect(page.locator('text=Active')).toBeVisible()
+      // Use more specific selector for Active (card title, not button)
+      await expect(page.locator('h2.card-title:has-text("Active")')).toBeVisible()
       await expect(page.locator('text=Completed')).toBeVisible()
     })
   })
@@ -227,11 +296,19 @@ test.describe('Todo Management', () => {
       const deleteButtons = page.locator('button:has-text("Delete")')
       await deleteButtons.first().click()
       
+      // Wait for confirm modal
+      await page.waitForSelector('.modal:has-text("Delete Todo")', { state: 'visible', timeout: 5000 })
+      
       // Cancel instead of confirm
       await page.click('button:has-text("Cancel")')
+      
+      // Wait for modal to close
+      await page.waitForSelector('.modal:has-text("Delete Todo")', { state: 'hidden', timeout: 3000 }).catch(() => {})
     })
 
     await allure.step('Verify todo still exists', async () => {
+      // Wait a bit for UI to update
+      await page.waitForTimeout(300)
       const newCount = await dashboard.getTodoCount()
       expect(newCount).toBe(initialCount)
     })

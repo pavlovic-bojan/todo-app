@@ -55,6 +55,32 @@ class LoginPage extends BasePage {
     await this.fillUsername(username)
     await this.fillPassword(password)
     await this.clickLogin()
+    // Wait for network to be idle first
+    await this.page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
+    // Wait for navigation to dashboard or error message
+    try {
+      await this.page.waitForURL(/\/dashboard/, { timeout: 20000 })
+    } catch (error) {
+      // If navigation didn't happen, check for error
+      await this.page.waitForTimeout(1000)
+      const errorMsg = await this.getErrorMessage()
+      if (errorMsg) {
+        // If rate limited, wait and retry once
+        if (errorMsg.includes('Too many') || errorMsg.includes('rate')) {
+          await this.page.waitForTimeout(3000)
+          await this.fillUsername(username)
+          await this.fillPassword(password)
+          await this.clickLogin()
+          await this.page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
+          await this.page.waitForURL(/\/dashboard/, { timeout: 20000 })
+        } else {
+          throw new Error(`Login failed: ${errorMsg}`)
+        }
+      } else {
+        // If no error and no navigation, wait a bit more
+        await this.page.waitForURL(/\/dashboard/, { timeout: 15000 })
+      }
+    }
   }
 
   /**
@@ -92,6 +118,8 @@ class LoginPage extends BasePage {
    * Assert successful login (redirected to dashboard)
    */
   async assertLoginSuccess() {
+    // Wait for URL to contain dashboard with longer timeout
+    await this.page.waitForURL(/\/dashboard/, { timeout: 20000 })
     await this.assertUrlContains('/dashboard')
   }
 

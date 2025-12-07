@@ -1,0 +1,73 @@
+name: 🧪 Regression Tests
+
+on:
+  workflow_dispatch: # Manual trigger only
+
+jobs:
+  regression-tests:
+    name: Regression Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: ☕ Setup Java for Allure
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 📦 Install test dependencies
+        run: |
+          cd test && npm install
+
+      - name: 🎭 Install Playwright browsers
+        run: |
+          cd test
+          npx playwright install --with-deps chromium
+
+      - name: 🔍 Verify servers are accessible
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL || 'https://todo-app-xhn2.onrender.com' }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL || 'https://todo-app-frontend-seven-rho.vercel.app' }}
+        run: |
+          echo "🔍 Checking backend health..."
+          BACKEND_API_URL="$BACKEND_URL"
+          if [[ ! "$BACKEND_URL" == *"/api"* ]]; then
+            BACKEND_API_URL="$BACKEND_URL/api"
+          fi
+          curl -f "$BACKEND_API_URL/health" || echo "⚠️ Backend health check failed, but continuing..."
+
+      - name: 🧪 Run regression tests
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL || 'https://todo-app-xhn2.onrender.com' }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL || 'https://todo-app-frontend-seven-rho.vercel.app' }}
+          CI: true
+        run: |
+          cd test
+          echo "🌐 Using Backend: $BACKEND_URL"
+          echo "🌐 Using Frontend: $FRONTEND_URL"
+          npm run test:regression
+
+      - name: 📊 Generate Allure report
+        if: always()
+        run: |
+          cd test
+          if [ -d "allure-results" ] && [ "$(ls -A allure-results)" ]; then
+            npx allure generate allure-results --clean -o allure-report
+          fi
+
+      - name: 📤 Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-regression
+          path: test/allure-report
+          retention-days: 30

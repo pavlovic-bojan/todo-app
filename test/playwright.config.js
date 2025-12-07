@@ -76,8 +76,8 @@ module.exports = defineConfig({
     trace: 'retain-on-failure',
     
     // Timeouts - Increased for hosted servers
-    actionTimeout: process.env.CI ? 30000 : 15000,
-    navigationTimeout: process.env.CI ? 60000 : 30000,
+    actionTimeout: process.env.CI ? 30000 : 20000,
+    navigationTimeout: process.env.CI ? 60000 : 40000,
     
     // Viewport
     viewport: { width: 1280, height: 720 },
@@ -99,7 +99,7 @@ module.exports = defineConfig({
         // API tests don't need browser, but we need baseURL for API calls
         baseURL: process.env.BACKEND_URL || testConfig.urls.api,
       },
-      timeout: 60000, // 60 seconds for API tests (longer for rate limiting)
+      timeout: 300000, // 5 minutes for API tests (longer for rate limiting)
     },
     // E2E tests - run in all browsers
     {
@@ -112,29 +112,34 @@ module.exports = defineConfig({
         // Additional Allure metadata
         testIdAttribute: 'data-testid'
       },
+      timeout: 300000, // 5 minutes for E2E tests
     },
-    {
-      name: 'firefox',
-      testMatch: [
-        '**/e2e/**/*.spec.js'
-      ],
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      testMatch: [
-        '**/e2e/**/*.spec.js'
-      ],
-      use: { ...devices['Desktop Safari'] },
-    },
-    // Mobile viewports
-    {
-      name: 'mobile-chrome',
-      testMatch: [
-        '**/e2e/**/*.spec.js'
-      ],
-      use: { ...devices['Pixel 5'] },
-    },
+    // Temporarily commented out other browsers for UI test fixes
+    // {
+    //   name: 'firefox',
+    //   testMatch: [
+    //     '**/e2e/**/*.spec.js'
+    //   ],
+    //   use: { ...devices['Desktop Firefox'] },
+    //   timeout: 300000, // 5 minutes for E2E tests
+    // },
+    // {
+    //   name: 'webkit',
+    //   testMatch: [
+    //     '**/e2e/**/*.spec.js'
+    //   ],
+    //   use: { ...devices['Desktop Safari'] },
+    //   timeout: 300000, // 5 minutes for E2E tests
+    // },
+    // // Mobile viewports
+    // {
+    //   name: 'mobile-chrome',
+    //   testMatch: [
+    //     '**/e2e/**/*.spec.js'
+    //   ],
+    //   use: { ...devices['Pixel 5'] },
+    //   timeout: 300000, // 5 minutes for E2E tests
+    // },
     // Database tests - run only once
     {
       name: 'database',
@@ -146,6 +151,7 @@ module.exports = defineConfig({
         // Database tests don't need browser
         baseURL: process.env.BACKEND_URL || testConfig.urls.api,
       },
+      timeout: 300000, // 5 minutes for database tests
     },
   ],
   

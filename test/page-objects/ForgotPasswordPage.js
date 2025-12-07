@@ -32,11 +32,23 @@ class ForgotPasswordPage extends BasePage {
   async requestPasswordReset(email) {
     await this.fillEmail(email)
     await this.submit()
+    // Wait for response (either success or error)
+    await Promise.race([
+      this.page.waitForSelector(this.successAlert, { timeout: 10000 }).catch(() => {}),
+      this.page.waitForSelector(this.errorAlert, { timeout: 10000 }).catch(() => {}),
+      this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {})
+    ])
   }
 
   async getResetToken() {
-    await this.waitForElement(this.resetTokenCode)
-    return await this.getText(this.resetTokenCode)
+    // Wait for success message first, then for reset token code
+    await this.waitForElement(this.successAlert, 15000)
+    // Wait a bit more for token to render
+    await this.page.waitForTimeout(500)
+    await this.waitForElement(this.resetTokenCode, 10000)
+    const token = await this.getText(this.resetTokenCode)
+    // Clean up token text (remove whitespace)
+    return token ? token.trim() : null
   }
 
   async clickBackToLogin() {

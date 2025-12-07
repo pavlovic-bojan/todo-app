@@ -43,7 +43,13 @@ class BasePage {
    * Wait for element to be visible
    */
   async waitForElement(selector, timeout = this.timeouts.long) {
-    await this.page.waitForSelector(selector, { timeout })
+    try {
+      await this.page.waitForSelector(selector, { timeout, state: 'visible' })
+    } catch (error) {
+      // If element not found, provide more context
+      const currentUrl = this.page.url()
+      throw new Error(`Element not found: ${selector} on page ${currentUrl}. ${error.message}`)
+    }
   }
 
   /**
@@ -143,15 +149,15 @@ class BasePage {
   /**
    * Assert element is visible
    */
-  async assertVisible(selector) {
-    await expect(this.page.locator(selector)).toBeVisible()
+  async assertVisible(selector, timeout = 10000) {
+    await expect(this.page.locator(selector)).toBeVisible({ timeout })
   }
 
   /**
    * Assert text content
    */
-  async assertText(selector, text) {
-    await expect(this.page.locator(selector)).toContainText(text)
+  async assertText(selector, text, timeout = 10000) {
+    await expect(this.page.locator(selector)).toContainText(text, { timeout })
   }
 
   /**

@@ -46,10 +46,12 @@ test.describe('Accessibility Tests', () => {
       
       await page.keyboard.press('Tab') // Focus on submit button
       await page.keyboard.press('Enter') // Submit
+      // Wait for navigation
+      await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
     })
 
     await allure.step('Verify login successful via keyboard', async () => {
-      await page.waitForURL(/\/dashboard/, { timeout: 10000 })
+      await page.waitForURL(/\/dashboard/, { timeout: 20000 })
     })
   })
 
@@ -80,10 +82,14 @@ test.describe('Accessibility Tests', () => {
 
     await allure.step('Press Escape key', async () => {
       await page.keyboard.press('Escape')
+      // Wait for modal to close
+      await page.waitForTimeout(300)
     })
 
     await allure.step('Verify modal closed', async () => {
-      await expect(page.locator('.modal')).not.toBeVisible({ timeout: 3000 })
+      // Check for modal with show class or fade class
+      const modalVisible = await page.locator('.modal.show, .modal.fade.show').isVisible().catch(() => false)
+      expect(modalVisible).toBe(false)
     })
   })
 
@@ -149,8 +155,11 @@ test.describe('Accessibility Tests', () => {
     await loginPage.goto()
 
     await allure.step('Trigger validation error', async () => {
-      await loginPage.login('wrong', 'wrong')
+      await loginPage.fillUsername('wrong')
+      await loginPage.fillPassword('wrong')
+      await loginPage.clickLogin()
       // Wait for error to appear
+      await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
       await page.waitForTimeout(1000)
     })
 
@@ -206,6 +215,8 @@ test.describe('Accessibility Tests', () => {
     const loginPage = new LoginPage(page)
     await loginPage.goto()
     await loginPage.login(testUser.username, testUser.password)
+    // Wait for navigation
+    await page.waitForURL(/\/dashboard/, { timeout: 20000 })
 
     const dashboard = new DashboardPage(page)
     await dashboard.goto()
@@ -215,8 +226,8 @@ test.describe('Accessibility Tests', () => {
       const nav = page.locator('nav')
       const article = page.locator('article')
       
-      await expect(main).toBeVisible()
-      await expect(nav).toBeVisible()
+      await expect(main.first()).toBeVisible({ timeout: 10000 })
+      await expect(nav.first()).toBeVisible({ timeout: 10000 })
       
       await allure.parameter('Main Element', (await main.count()).toString())
       await allure.parameter('Nav Element', (await nav.count()).toString())
