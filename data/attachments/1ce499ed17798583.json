@@ -1,0 +1,8 @@
+{
+  "method": "POST",
+  "endpoint": "/users/reset-password",
+  "data": {
+    "resetToken": "b52861c9469dbba4036580901041c69318e2a0cd884ee87d299ac17de63cc311",
+    "newPassword": "NewPassword123"
+  }
+}

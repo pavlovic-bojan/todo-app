@@ -1,0 +1,14 @@
+{
+  "id": 52,
+  "username": "testuser_INlJd27oOK_1765128506154",
+  "email": "test_INlJd27oOK_1765128506154@test.com",
+  "hashedPassword": "$2b$12$t/XKCLuSbkspLdAk2b4Wr.UAtjr8m8VAj.b1YbRWKbyigJmzMJhMy",
+  "role": "client",
+  "age": null,
+  "hashedResetToken": null,
+  "resetTokenExpiry": null,
+  "refreshToken": null,
+  "refreshTokenExpiry": null,
+  "createdAt": "2025-12-07T17:28:26.856Z",
+  "updatedAt": "2025-12-07T17:28:26.856Z"
+}

@@ -1,0 +1,46 @@
+{
+  "status": 200,
+  "data": {
+    "message": "Login successful",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTg0MiwidXNlcm5hbWUiOiJ0ZXN0dXNlcl8xNzY1MTI4NDU1NDgwIiwicm9sZSI6ImNsaWVudCIsImlhdCI6MTc2NTEyODQ2OSwiZXhwIjoxNzY1MTI5MzY5fQ.xMZXPLhaD7H7b75xVe02zgxHQlPRNrO_HcBfY5U5OtM",
+    "user": {
+      "id": 1842,
+      "username": "testuser_1765128455480",
+      "email": "test_1765128455480@example.com",
+      "role": "client"
+    }
+  },
+  "headers": {
+    "date": "Sun, 07 Dec 2025 17:27:49 GMT",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "294",
+    "connection": "close",
+    "cf-ray": "9aa5bc383d16cf55-SJC",
+    "access-control-allow-credentials": "true",
+    "access-control-allow-origin": "https://todo-app-frontend-seven-rho.vercel.app",
+    "content-security-policy": "default-src 'self';style-src 'self' 'unsafe-inline';script-src 'self';img-src 'self' data: https:;base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';upgrade-insecure-requests",
+    "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "etag": "W/\"172-wzJw6goZmXe9vopDrN2QBTlu7JE\"",
+    "origin-agent-cluster": "?1",
+    "ratelimit-limit": "100000",
+    "ratelimit-policy": "100000;w=900",
+    "ratelimit-remaining": "99936",
+    "ratelimit-reset": "792",
+    "referrer-policy": "no-referrer",
+    "rndr-id": "32178f61-c05c-42cc",
+    "set-cookie": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTg0MiwidXNlcm5hbWUiOiJ0ZXN0dXNlcl8xNzY1MTI4NDU1NDgwIiwiaWF0IjoxNzY1MTI4NDY5LCJleHAiOjE3NjU3MzMyNjl9.kMKRhHFpHnqGsPYtDTc1XGB5GWbX-YifSyR-Q6FClN4; Max-Age=604800; Path=/; Expires=Sun, 14 Dec 2025 17:27:49 GMT; HttpOnly; SameSite=Strict",
+    "strict-transport-security": "max-age=15552000; includeSubDomains",
+    "vary": "Origin, Accept-Encoding, Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-dns-prefetch-control": "off",
+    "x-download-options": "noopen",
+    "x-frame-options": "SAMEORIGIN",
+    "x-permitted-cross-domain-policies": "none",
+    "x-render-origin-server": "Render",
+    "x-xss-protection": "0",
+    "cf-cache-status": "DYNAMIC",
+    "server": "cloudflare",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  }
+}

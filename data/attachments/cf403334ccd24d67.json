@@ -1,0 +1,39 @@
+{
+  "status": 500,
+  "data": {
+    "message": "\nInvalid `prisma.user.create()` invocation in\n/opt/render/project/src/backend/src/api/services/UserService.js:47:39\n\n  44 const hashedPassword = await bcrypt.hash(password, 12) // Increased to 12 rounds\n  45 \n  46 // Create new user\n→ 47 const newUser = await prisma.user.create(\nUnique constraint failed on the fields: (`username`)",
+    "stack": "PrismaClientKnownRequestError: \nInvalid `prisma.user.create()` invocation in\n/opt/render/project/src/backend/src/api/services/UserService.js:47:39\n\n  44 const hashedPassword = await bcrypt.hash(password, 12) // Increased to 12 rounds\n  45 \n  46 // Create new user\n→ 47 const newUser = await prisma.user.create(\nUnique constraint failed on the fields: (`username`)\n    at $n.handleRequestError (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:7315)\n    at $n.handleAndLogRequestError (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:6623)\n    at $n.request (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:121:6307)\n    at async l (/opt/render/project/src/node_modules/@prisma/client/runtime/library.js:130:9633)\n    at async Object.registerUser (/opt/render/project/src/backend/src/api/services/UserService.js:47:21)\n    at async registerUser (/opt/render/project/src/backend/src/api/controllers/UserController.js:6:24)"
+  },
+  "headers": {
+    "date": "Sun, 07 Dec 2025 17:26:20 GMT",
+    "content-type": "application/json; charset=utf-8",
+    "transfer-encoding": "chunked",
+    "connection": "close",
+    "cf-ray": "9aa5ba16086ef983-SJC",
+    "access-control-allow-credentials": "true",
+    "access-control-allow-origin": "https://todo-app-frontend-seven-rho.vercel.app",
+    "content-security-policy": "default-src 'self';style-src 'self' 'unsafe-inline';script-src 'self';img-src 'self' data: https:;base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';upgrade-insecure-requests",
+    "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "etag": "W/\"563-t4purbkJCV9fTxq4Ab3j+0rAIGA\"",
+    "origin-agent-cluster": "?1",
+    "ratelimit-limit": "100000",
+    "ratelimit-policy": "100000;w=900",
+    "ratelimit-remaining": "99987",
+    "ratelimit-reset": "880",
+    "referrer-policy": "no-referrer",
+    "rndr-id": "d273e173-2388-4105",
+    "strict-transport-security": "max-age=15552000; includeSubDomains",
+    "vary": "Origin, Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-dns-prefetch-control": "off",
+    "x-download-options": "noopen",
+    "x-frame-options": "SAMEORIGIN",
+    "x-permitted-cross-domain-policies": "none",
+    "x-render-origin-server": "Render",
+    "x-xss-protection": "0",
+    "cf-cache-status": "DYNAMIC",
+    "server": "cloudflare",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "status": 201,
+  "data": {
+    "message": "User registered successfully",
+    "user": {
+      "id": 1852,
+      "username": "testuser_1765128483956",
+      "email": "test_1765128483956@example.com",
+      "role": "client",
+      "age": 25,
+      "createdAt": "2025-12-07T17:28:09.186Z"
+    }
+  },
+  "headers": {
+    "date": "Sun, 07 Dec 2025 17:28:09 GMT",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "151",
+    "connection": "close",
+    "cf-ray": "9aa5bcc0dd80cc7e-SJC",
+    "access-control-allow-credentials": "true",
+    "access-control-allow-origin": "https://todo-app-frontend-seven-rho.vercel.app",
+    "content-security-policy": "default-src 'self';style-src 'self' 'unsafe-inline';script-src 'self';img-src 'self' data: https:;base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';upgrade-insecure-requests",
+    "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "etag": "W/\"ca-eXmqCjZgn7vsd49F6WAaJMqL1zc\"",
+    "origin-agent-cluster": "?1",
+    "ratelimit-limit": "100000",
+    "ratelimit-policy": "100000;w=900",
+    "ratelimit-remaining": "99923",
+    "ratelimit-reset": "770",
+    "referrer-policy": "no-referrer",
+    "rndr-id": "47d98a2a-9357-49ed",
+    "strict-transport-security": "max-age=15552000; includeSubDomains",
+    "vary": "Origin, Accept-Encoding, Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-dns-prefetch-control": "off",
+    "x-download-options": "noopen",
+    "x-frame-options": "SAMEORIGIN",
+    "x-permitted-cross-domain-policies": "none",
+    "x-render-origin-server": "Render",
+    "x-xss-protection": "0",
+    "cf-cache-status": "DYNAMIC",
+    "server": "cloudflare",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  }
+}

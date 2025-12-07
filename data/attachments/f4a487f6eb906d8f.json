@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "endpoint": "/users/register",
+  "data": {
+    "username": "user_1765128444204_anwdsrbzc",
+    "email": "Moshe_Stokes-Watsica@yahoo.com",
+    "password": "0ANdG1yE",
+    "role": "client",
+    "age": 66
+  }
+}

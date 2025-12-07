@@ -1,7 +1,0 @@
-{
-  "method": "POST",
-  "endpoint": "/users/forgot-password",
-  "data": {
-    "email": "test_1765126429775@example.com"
-  }
-}

@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "endpoint": "/users/register",
+  "data": {
+    "username": "user_1765128455984_37zlg1d3p",
+    "email": "Archibald.Shields10@yahoo.com",
+    "password": "Uugjit9x",
+    "role": "client",
+    "age": 79
+  }
+}

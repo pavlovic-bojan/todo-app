@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "endpoint": "/users/register",
+  "data": {
+    "username": "user_1765128443790_41yyd734h",
+    "email": "Eudora_Bosco@gmail.com",
+    "password": "CnYzcj1S",
+    "role": "client",
+    "age": 42
+  }
+}

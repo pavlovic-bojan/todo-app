@@ -1,0 +1,46 @@
+{
+  "status": 201,
+  "data": {
+    "message": "User registered successfully",
+    "user": {
+      "id": 1843,
+      "username": "user_1765128455984_37zlg1d3p",
+      "email": "archibald.shields10@yahoo.com",
+      "role": "client",
+      "age": 79,
+      "createdAt": "2025-12-07T17:27:41.085Z"
+    }
+  },
+  "headers": {
+    "date": "Sun, 07 Dec 2025 17:27:41 GMT",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "165",
+    "connection": "close",
+    "cf-ray": "9aa5bc12385ab5f2-SJC",
+    "access-control-allow-credentials": "true",
+    "access-control-allow-origin": "https://todo-app-frontend-seven-rho.vercel.app",
+    "content-security-policy": "default-src 'self';style-src 'self' 'unsafe-inline';script-src 'self';img-src 'self' data: https:;base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';upgrade-insecure-requests",
+    "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "etag": "W/\"cf-O4TcMrajIql9QoBKb7Rw9aK6sLI\"",
+    "origin-agent-cluster": "?1",
+    "ratelimit-limit": "100000",
+    "ratelimit-policy": "100000;w=900",
+    "ratelimit-remaining": "99943",
+    "ratelimit-reset": "798",
+    "referrer-policy": "no-referrer",
+    "rndr-id": "a8e72faa-f60e-42ec",
+    "strict-transport-security": "max-age=15552000; includeSubDomains",
+    "vary": "Origin, Accept-Encoding, Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-dns-prefetch-control": "off",
+    "x-download-options": "noopen",
+    "x-frame-options": "SAMEORIGIN",
+    "x-permitted-cross-domain-policies": "none",
+    "x-render-origin-server": "Render",
+    "x-xss-protection": "0",
+    "cf-cache-status": "DYNAMIC",
+    "server": "cloudflare",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  }
+}

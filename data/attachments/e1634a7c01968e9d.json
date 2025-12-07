@@ -1,0 +1,5 @@
+{
+  "method": "POST",
+  "endpoint": "/users/logout",
+  "data": null
+}

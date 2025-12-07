@@ -1,9 +1,0 @@
-{
-  "method": "POST",
-  "endpoint": "/todos",
-  "data": {
-    "title": "Solvo aetas sordeo coadunatio tui utpote.",
-    "description": "Cumque ventosus avarus sordeo reprehenderit delego contego. Candidus vitium saepe verto utilis ver denique conor. Somniculosus temeritas vestrum deserunt quasi ustulo.",
-    "completed": false
-  }
-}
