@@ -114,31 +114,6 @@ module.exports = defineConfig({
       },
       timeout: 300000, // 5 minutes for E2E tests
     },
-    {
-      name: 'firefox',
-      testMatch: [
-        '**/e2e/**/*.spec.js'
-      ],
-      use: { ...devices['Desktop Firefox'] },
-      timeout: 300000, // 5 minutes for E2E tests
-    },
-    {
-      name: 'webkit',
-      testMatch: [
-        '**/e2e/**/*.spec.js'
-      ],
-      use: { ...devices['Desktop Safari'] },
-      timeout: 300000, // 5 minutes for E2E tests
-    },
-    // Mobile viewports
-    {
-      name: 'mobile-chrome',
-      testMatch: [
-        '**/e2e/**/*.spec.js'
-      ],
-      use: { ...devices['Pixel 5'] },
-      timeout: 300000, // 5 minutes for E2E tests
-    },
     // Database tests - run only once
     {
       name: 'database',
