@@ -1,6 +1,14 @@
+# ============================================
+# ROOT .gitignore - Common patterns for all packages
+# Package-specific ignores are in their respective folders
+# ============================================
+
 # Dependencies
 node_modules/
 */node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Environment variables
 .env
@@ -9,37 +17,55 @@ node_modules/
 */.env
 */.env.local
 
-# Database
+# Database files (SQLite)
 *.db
 *.db-journal
 
-# Logs
-logs/
+# Logs (general)
 *.log
 npm-debug.log*
 yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# OS
+# OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# IDE
+# IDE / Editor
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.settings/
 
-# Build
-dist/
+# Build outputs (general)
 build/
-*/dist/
 */build/
 
-# Testing
+# Testing (general)
 coverage/
 */coverage/
+.nyc_output/
 
 # Temporary files
 *.tmp
 temp/
+tmp/
+*.cache
+
+# Package manager
+.npm
+.eslintcache

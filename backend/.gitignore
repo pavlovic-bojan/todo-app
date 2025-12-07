@@ -1,0 +1,12 @@
+# Backend-specific files
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+prisma/migrations/dev.db*
+
+# Backend logs (if logs/ folder is backend-specific)
+logs/
+*.log
+
+# Note: Common patterns (node_modules, .env, etc.) are handled by root .gitignore
