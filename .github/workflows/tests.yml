@@ -114,19 +114,56 @@ jobs:
           echo "🔍 Checking frontend..."
           curl -f "$FRONTEND_URL" || echo "⚠️ Frontend check failed, but continuing..."
 
-      - name: 🧪 Run All Tests
+      - name: 🧪 Run UI tests
+        env:
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL || 'https://todo-app-frontend-seven-rho.vercel.app' }}
+          CI: true
+        continue-on-error: true
+        run: |
+          cd test
+          echo "🌐 Using Frontend: $FRONTEND_URL"
+          echo "🧪 Running UI tests..."
+          npm run test:ui || echo "⚠️ UI tests completed with errors"
+
+      - name: 🧪 Run API tests
         env:
           BACKEND_URL: ${{ secrets.BACKEND_URL || 'https://todo-app-xhn2.onrender.com' }}
-          FRONTEND_URL: ${{ secrets.FRONTEND_URL || 'https://todo-app-frontend-seven-rho.vercel.app' }}
+          CI: true
+        continue-on-error: true
+        run: |
+          cd test
+          echo "🧪 Running API tests..."
+          npm run test:api || echo "⚠️ API tests completed with errors"
+
+      - name: 🧪 Run Database tests
+        env:
           DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
           CI: true
         continue-on-error: true
         run: |
           cd test
-          echo "🌐 Using Backend: $BACKEND_URL"
-          echo "🌐 Using Frontend: $FRONTEND_URL"
-          echo "🧪 Running all tests (UI, API, DB, Contract, Performance)..."
-          npm run test:all || echo "⚠️ Some tests completed with errors"
+          echo "🧪 Running Database tests..."
+          npm run test:db || echo "⚠️ Database tests completed with errors"
+
+      - name: 🧪 Run Contract tests
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL || 'https://todo-app-xhn2.onrender.com' }}
+          CI: true
+        continue-on-error: true
+        run: |
+          cd test
+          echo "🧪 Running Contract tests..."
+          npm run test:contract || echo "⚠️ Contract tests completed with errors"
+
+      - name: 🧪 Run Performance tests
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL || 'https://todo-app-xhn2.onrender.com' }}
+          CI: true
+        continue-on-error: true
+        run: |
+          cd test
+          echo "🧪 Running Performance tests..."
+          npm run test:performance:all || echo "⚠️ Performance tests completed with errors"
 
       - name: 📊 Generate Allure report
         if: always()
@@ -173,4 +210,3 @@ jobs:
         run: |
           echo "📊 Allure Report deployed to GitHub Pages"
           echo "🔗 View report at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-
