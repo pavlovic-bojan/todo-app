@@ -23,6 +23,8 @@ class AuthHelper {
    * Login user and get token
    */
   async loginUser(username, password) {
+    // Small delay to avoid rate limiting when multiple tests run quickly
+    await new Promise(resolve => setTimeout(resolve, 500))
     const response = await apiHelper.post('/users/login', { username, password })
     
     if (response.status === 200 && response.data.accessToken) {

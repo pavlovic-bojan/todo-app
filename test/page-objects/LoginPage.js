@@ -52,6 +52,8 @@ class LoginPage extends BasePage {
    * Complete login flow
    */
   async login(username, password) {
+    // Small delay to avoid rate limiting when multiple tests run quickly
+    await this.page.waitForTimeout(500)
     await this.fillUsername(username)
     await this.fillPassword(password)
     await this.clickLogin()
