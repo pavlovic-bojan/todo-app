@@ -15,7 +15,7 @@ module.exports = defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 5 : undefined,
   
   // Allure Reporter
   reporter: [
@@ -114,32 +114,31 @@ module.exports = defineConfig({
       },
       timeout: 300000, // 5 minutes for E2E tests
     },
-    // Temporarily commented out other browsers for UI test fixes
-    // {
-    //   name: 'firefox',
-    //   testMatch: [
-    //     '**/e2e/**/*.spec.js'
-    //   ],
-    //   use: { ...devices['Desktop Firefox'] },
-    //   timeout: 300000, // 5 minutes for E2E tests
-    // },
-    // {
-    //   name: 'webkit',
-    //   testMatch: [
-    //     '**/e2e/**/*.spec.js'
-    //   ],
-    //   use: { ...devices['Desktop Safari'] },
-    //   timeout: 300000, // 5 minutes for E2E tests
-    // },
-    // // Mobile viewports
-    // {
-    //   name: 'mobile-chrome',
-    //   testMatch: [
-    //     '**/e2e/**/*.spec.js'
-    //   ],
-    //   use: { ...devices['Pixel 5'] },
-    //   timeout: 300000, // 5 minutes for E2E tests
-    // },
+    {
+      name: 'firefox',
+      testMatch: [
+        '**/e2e/**/*.spec.js'
+      ],
+      use: { ...devices['Desktop Firefox'] },
+      timeout: 300000, // 5 minutes for E2E tests
+    },
+    {
+      name: 'webkit',
+      testMatch: [
+        '**/e2e/**/*.spec.js'
+      ],
+      use: { ...devices['Desktop Safari'] },
+      timeout: 300000, // 5 minutes for E2E tests
+    },
+    // Mobile viewports
+    {
+      name: 'mobile-chrome',
+      testMatch: [
+        '**/e2e/**/*.spec.js'
+      ],
+      use: { ...devices['Pixel 5'] },
+      timeout: 300000, // 5 minutes for E2E tests
+    },
     // Database tests - run only once
     {
       name: 'database',
